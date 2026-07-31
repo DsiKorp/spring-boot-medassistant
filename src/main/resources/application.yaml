@@ -1,26 +1,13 @@
+server:
+  port: 8080
 spring:
+  profiles:
+    active: ollama
   application:
-    name: iamedassistan
-  autoconfigure:
-    exclude:
-      #- org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
-      - org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
+    name: iamedassistant
   threads:
     virtual:
       enabled: true
-  ai:
-    google:
-      genai:
-        api-key: ${GOOGLE_AI_API_KEY}
-        chat:
-          options:
-            model: gemini-3.1-flash-lite
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          #model: llama3.2:3b
-          model: qwen3.5:latest
   datasource:
     url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}

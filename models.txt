@@ -1,2 +1,13 @@
 ollama pull llama3.2:3b
 ollama pull qwen3:8b
+qwen3.5:latest
+
+
+curl -X POST http://localhost:8080/api/v1/chat/stream hat/stream  \
+-H "Content-Type: text/plain" \
+-d "Escribe un poema corto sobre Java"
+
+
+curl -X POST http://localhost:8080/api/v1/ai/chat \
+  -H "Content-Type: text/plain" \
+  -d "¿Cuál es el saldo de la cuenta 1?"

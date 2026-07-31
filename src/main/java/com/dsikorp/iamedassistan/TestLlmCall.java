@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestLlmCall implements CommandLineRunner {
 
