@@ -3,8 +3,8 @@ spring:
     name: iamedassistan
   autoconfigure:
     exclude:
-      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
-      #- org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
+      #- org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
+      - org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
   threads:
     virtual:
       enabled: true
@@ -19,7 +19,8 @@ spring:
       base-url: http://localhost:11434
       chat:
         options:
-          model: llama3.2:3b
+          #model: llama3.2:3b
+          model: qwen3.5:latest
   datasource:
     url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
