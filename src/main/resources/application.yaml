@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: ollama
+    active: ollama, gemini
   application:
     name: iamedassistant
   threads:
