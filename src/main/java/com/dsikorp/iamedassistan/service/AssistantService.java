@@ -1,0 +1,17 @@
+package com.dsikorp.iamedassistan.service;
+
+import reactor.core.publisher.Flux;
+
+public interface AssistantService {
+    String chat(String prompt, String model);
+
+    Flux<String> chatStream(String prompt, String model);
+
+    String explainCondition(String condition, String model);
+
+//    String analyzeSymptoms(String symptoms, String model);
+//
+//    String diagnoseWithReasoning(String symptoms, String model);
+//
+//    String consult(String query, String model);
+}
