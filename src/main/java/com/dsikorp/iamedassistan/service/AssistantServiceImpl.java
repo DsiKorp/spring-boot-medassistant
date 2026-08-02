@@ -20,23 +20,23 @@ public class AssistantServiceImpl implements AssistantService {
 
     @Value("classpath:prompts/explain-condition.st")
     private Resource explainConditionPrompt;
-//
-//    @Value("classpath:prompts/symptom-analysis.st")
-//    private Resource symptomAnalysisPrompt;
-//
-//    @Value("classpath:prompts/diagnosis-cot.st")
-//    private Resource diagnosisCotResource;
-//
-//    @Value("classpath:prompts/consultation.st")
-//    private Resource consultationResource;
+
+    @Value("classpath:prompts/symptom-analysis.st")
+    private Resource symptomAnalysisPrompt;
+
+    @Value("classpath:prompts/diagnosis-cot.st")
+    private Resource diagnosisCotResource;
+
+    @Value("classpath:prompts/consultation.st")
+    private Resource consultationResource;
 
     private PromptTemplate explainConditionTemplate;
-//
-//    private PromptTemplate symptomAnalysisTemplate;
-//
-//    private PromptTemplate diagnosisCotTemplate;
-//
-//    private PromptTemplate consultationTemplate;
+
+    private PromptTemplate symptomAnalysisTemplate;
+
+    private PromptTemplate diagnosisCotTemplate;
+
+    private PromptTemplate consultationTemplate;
 
     public AssistantServiceImpl(
             @Qualifier("geminiClient") ChatClient geminiClient,
@@ -49,9 +49,9 @@ public class AssistantServiceImpl implements AssistantService {
 
     @PostConstruct
     void init() {
-        //consultationTemplate = new PromptTemplate(consultationResource);
-        //diagnosisCotTemplate = new PromptTemplate(diagnosisCotResource);
-        //symptomAnalysisTemplate = new PromptTemplate(symptomAnalysisPrompt);
+        consultationTemplate = new PromptTemplate(consultationResource);
+        diagnosisCotTemplate = new PromptTemplate(diagnosisCotResource);
+        symptomAnalysisTemplate = new PromptTemplate(symptomAnalysisPrompt);
         explainConditionTemplate = new PromptTemplate(explainConditionPrompt);
     }
 
@@ -91,39 +91,39 @@ public class AssistantServiceImpl implements AssistantService {
                 .content();
     }
 
-//    @Override
-//    public String analyzeSymptoms(String symptoms, String model) {
-//        log.info("Análisis de síntomas: {}, modelo: {}", symptoms, model);
-//
-//        String message = symptomAnalysisTemplate.render(Map.of("sintomas", symptoms));
-//
-//        return resolveClient(model)
-//                .prompt(message)
-//                .call()
-//                .content();
-//    }
-//
-//    @Override
-//    public String diagnoseWithReasoning(String symptoms, String model) {
-//        log.info("Diagnóstico CoT — modelo: {}", model);
-//
-//        String message = diagnosisCotTemplate.render(Map.of("sintomas", symptoms));
-//
-//        return resolveClient(model)
-//                .prompt(message)
-//                .call()
-//                .content();
-//    }
-//
-//    @Override
-//    public String consult(String query, String model) {
-//        log.info("Consulta médica — modelo: {}", model);
-//        String message = consultationTemplate.render(Map.of("consulta", query));
-//        return resolveClient(model)
-//                .prompt(message)
-//                .call()
-//                .content();
-//    }
+    @Override
+    public String analyzeSymptoms(String symptoms, String model) {
+        log.info("Análisis de síntomas: {}, modelo: {}", symptoms, model);
+
+        String message = symptomAnalysisTemplate.render(Map.of("sintomas", symptoms));
+
+        return resolveClient(model)
+                .prompt(message)
+                .call()
+                .content();
+    }
+
+    @Override
+    public String diagnoseWithReasoning(String symptoms, String model) {
+        log.info("Diagnóstico CoT — modelo: {}", model);
+
+        String message = diagnosisCotTemplate.render(Map.of("sintomas", symptoms));
+
+        return resolveClient(model)
+                .prompt(message)
+                .call()
+                .content();
+    }
+
+    @Override
+    public String consult(String query, String model) {
+        log.info("Consulta médica — modelo: {}", model);
+        String message = consultationTemplate.render(Map.of("consulta", query));
+        return resolveClient(model)
+                .prompt(message)
+                .call()
+                .content();
+    }
 
     private ChatClient resolveClient(String model) {
         return "ollama".equalsIgnoreCase(model) ? ollamaClient : geminiClient;

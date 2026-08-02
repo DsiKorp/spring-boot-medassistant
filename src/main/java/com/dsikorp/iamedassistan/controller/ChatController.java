@@ -37,24 +37,24 @@ public class ChatController {
         return ResponseEntity.ok(assistantService.explainCondition(request.prompt(), request.model()));
     }
 
-//    @PostMapping("/symptoms")
-//    public ResponseEntity<String> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request) {
-//        return ResponseEntity.ok(assistantService.analyzeSymptoms(request.prompt(), request.model()));
-//    }
-//
-//    @PostMapping("/diagnose")
-//    public ResponseEntity<String> diagnoseWithReasoning(
-//            @Valid @RequestBody ChatRequestDto request) {
-//        return ResponseEntity.ok(
-//                assistantService.diagnoseWithReasoning(
-//                        request.prompt(), request.model()));
-//    }
-//
-//    @PostMapping("/consult")
-//    public ResponseEntity<String> consult(
-//            @Valid @RequestBody ChatRequestDto request) {
-//        return ResponseEntity.ok(
-//                assistantService.consult(
-//                        request.prompt(), request.model()));
-//    }
+    @PostMapping("/symptoms")
+    public ResponseEntity<String> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(assistantService.analyzeSymptoms(request.prompt(), request.model()));
+    }
+
+    @PostMapping("/diagnose")
+    public ResponseEntity<String> diagnoseWithReasoning(
+            @Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(
+                assistantService.diagnoseWithReasoning(
+                        request.prompt(), request.model()));
+    }
+
+    @PostMapping("/consult")
+    public ResponseEntity<String> consult(
+            @Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(
+                assistantService.consult(
+                        request.prompt(), request.model()));
+    }
 }

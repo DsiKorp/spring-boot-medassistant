@@ -1,7 +1,15 @@
 ollama pull llama3.2:3b
 ollama pull qwen3:8b
-qwen3.5:latest
+ollama run qwen3.5:2b
 
+ollama list
+NAME                    SIZE
+qwen3.5:2b              2.7 GB
+qwen3:8b                5.2 GB
+llama3.2:3b             2.0 GB
+qwen3.5:latest          6.6 GB
+glm-4.7-flash:latest    19 GB
+gpt-oss:20b             13 GB
 
 curl -X POST http://localhost:8080/api/v1/chat/stream hat/stream  \
 -H "Content-Type: text/plain" \
@@ -11,3 +19,22 @@ curl -X POST http://localhost:8080/api/v1/chat/stream hat/stream  \
 curl -X POST http://localhost:8080/api/v1/ai/chat \
   -H "Content-Type: text/plain" \
   -d "¿Cuál es el saldo de la cuenta 1?"
+
+
+String Tempates:
+
+Promt Text
+expleain-condition.st
+
+Few-shot: (con ejemplos)
+symptom-analysis.st
+
+Chain-of-thought
+diagnosis-cot.st
+
+Role Prompting y Systempromt
+system-prompt.st
+
+Todo en uno:
+consultation.st
+
