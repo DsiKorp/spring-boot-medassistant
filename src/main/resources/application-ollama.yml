@@ -11,3 +11,6 @@ spring:
           #model: llama3.2:3b
           #model: qwen3.5:latest
           model: minimax-m3:cloud
+          temperature: 0.2
+          top-p: 0.85
+          num-predict: 2048
