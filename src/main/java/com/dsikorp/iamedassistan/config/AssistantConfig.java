@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class AssistantConfig {
 //    }
 
     @Bean("geminiClient")
-    ChatClient geminiClient(GoogleGenAiChatModel chatModel)  throws IOException{
+    ChatClient geminiClient(GoogleGenAiChatModel chatModel) throws IOException {
 
         String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
                 .replace("{currentDate}", LocalDate.now().toString());
@@ -40,7 +41,7 @@ public class AssistantConfig {
     }
 
     @Bean("ollamaClient")
-    ChatClient ollamaClient(OllamaChatModel chatModel)  throws IOException{
+    ChatClient ollamaClient(OllamaChatModel chatModel) throws IOException {
         String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
                 .replace("{currentDate}", LocalDate.now().toString());
 

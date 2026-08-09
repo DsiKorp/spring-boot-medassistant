@@ -92,7 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             String specialty
     ){
         return appointments.stream()
-                .map(a -> new AppointmentInfo(
+                .map(a -> new AppointmentInfo(  // AppointmentInfo DTO
                         doctorNames.get(a.getDoctorId()),
                         specialty,
                         a.getDate().toString(),

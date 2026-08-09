@@ -1,6 +1,7 @@
 package com.dsikorp.iamedassistan.service;
 
 import com.dsikorp.iamedassistan.config.ClientResolver;
+import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class AssistantServiceImpl implements AssistantService {
     //    private final ChatClient geminiClient;
     //    private final ChatClient ollamaClient;
     private final ClientResolver clientResolver;
+    //private final AppointmentSearchTool appointmentSearchTool;
 
     @Value("classpath:prompts/explain-condition.st")
     private Resource explainConditionPrompt;
@@ -64,7 +66,10 @@ public class AssistantServiceImpl implements AssistantService {
         log.info("Chat request - modelo: {} ", model);
 
         return clientResolver.resolve(model)
-                .prompt(prompt).call().content();
+                .prompt(prompt)
+                //.tools(appointmentSearchTool)
+                .call()
+                .content();
     }
 
     @Override
