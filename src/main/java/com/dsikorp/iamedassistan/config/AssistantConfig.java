@@ -1,6 +1,7 @@
 package com.dsikorp.iamedassistan.config;
 
 import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
+import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
@@ -22,6 +23,7 @@ public class AssistantConfig {
     private Resource systemPromptResource;
 
     private final AppointmentSearchTool appointmentSearchTool;
+    private final DoctorInfoTool doctorInfoTool;
 
 //    @Bean
 //    ChatClient chatClient(ChatClient.Builder builder) {
@@ -36,7 +38,7 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
                 .build();
     }
 
@@ -47,7 +49,7 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
                 .build();
     }
 }
