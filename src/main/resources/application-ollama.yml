@@ -4,13 +4,10 @@ spring:
   #      - org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
   ai:
     ollama:
-      base-url: http://localhost:11434
+      base-url: ${OLLAMA_AI_URL}
       chat:
         options:
-          #model: qwen3.5:2b
-          #model: llama3.2:3b
-          #model: qwen3.5:latest
-          model: minimax-m3:cloud
+          model: ${OLLAMA_AI_MODEL}
           temperature: 0.2
           top-p: 0.85
           num-predict: 2048

@@ -1,14 +1,14 @@
 spring:
-#  autoconfigure:
-#    exclude:
-#      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
+  #  autoconfigure:
+  #    exclude:
+  #      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
   ai:
     google:
       genai:
         api-key: ${GOOGLE_AI_API_KEY}
         chat:
           options:
-            model: gemini-3.1-flash-lite
+            model: ${GOOGLE_AI_MODEL}
             temperature: 0.2
             top-p: 0.85
             max-output-tokens: 2048
