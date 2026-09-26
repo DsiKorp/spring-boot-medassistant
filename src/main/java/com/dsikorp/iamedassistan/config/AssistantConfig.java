@@ -2,9 +2,11 @@ package com.dsikorp.iamedassistan.config;
 
 import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
 import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
+import com.anthropic.models.messages.Model;
 import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.anthropic.AnthropicChatModel;
+import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
@@ -133,6 +135,47 @@ public class AssistantConfig {
                 .openAiClient(syncClient)
                 .openAiClientAsync(asyncClient)
                 .options(options)
+                .build();
+
+        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
+                .replace("{currentDate}", LocalDate.now().toString());
+
+        return ChatClient.builder(chatModel)
+                .defaultSystem(systemPrompt)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .build();
+    }
+
+    /**
+     * MiniMax expone una API Anthropic-compatible en {@code https://api.minimax.io/anthropic},
+     * así que reutilizamos {@link AnthropicChatModel} con una {@link AnthropicChatOptions}
+     * apuntada a su base-url. {@code AnthropicChatModel.builder()} construye internamente el
+     * cliente de Anthropic a partir de {@code baseUrl} y {@code apiKey} de las options.
+     * Se mantiene como bean independiente para no colisionar con la auto-config nativa
+     * de Anthropic (que sigue creando su propio {@code AnthropicChatModel} a partir de
+     * {@code spring.ai.anthropic.*}).
+     * <p>
+     * Se usa {@link Model#of(String)} porque {@code MiniMax-M3[1m]} no es un modelo
+     * conocido del enum de Anthropic.
+     */
+    @Bean("minimaxClient")
+    ChatClient minimaxClient(
+            @Value("${spring.ai.minimax.api-key}") String apiKey,
+            @Value("${spring.ai.minimax.base-url}") String baseUrl,
+            @Value("${spring.ai.minimax.chat.options.model}") String model
+    ) throws IOException {
+        AnthropicChatOptions options = AnthropicChatOptions.builder()
+                .model(Model.of(model))
+                .baseUrl(baseUrl)
+                .apiKey(apiKey)
+                .temperature(0.2)
+                .topP(0.85)
+                .maxTokens(2048)
+                .build();
+
+        AnthropicChatModel chatModel = AnthropicChatModel.builder()
+                .options(options)
+                .observationRegistry(ObservationRegistry.NOOP)
                 .build();
 
         String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)

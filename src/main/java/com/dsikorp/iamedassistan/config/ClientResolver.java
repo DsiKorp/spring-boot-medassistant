@@ -14,18 +14,21 @@ public class ClientResolver {
     private final ChatClient openaiClient;
     private final ChatClient anthropicClient;
     private final ChatClient groqClient;
+    private final ChatClient minimaxClient;
 
     public ClientResolver(
             @Qualifier("geminiClient") ChatClient geminiClient,
             @Qualifier("ollamaClient") ChatClient ollamaClient,
             @Qualifier("openiaClient") ChatClient openaiClient,
             @Qualifier("anthropicClient") ChatClient anthropicClient,
-            @Qualifier("groqClient") ChatClient groqClient) {
+            @Qualifier("groqClient") ChatClient groqClient,
+            @Qualifier("minimaxClient") ChatClient minimaxClient) {
         this.geminiClient = geminiClient;
         this.ollamaClient = ollamaClient;
         this.openaiClient = openaiClient;
         this.anthropicClient = anthropicClient;
         this.groqClient = groqClient;
+        this.minimaxClient = minimaxClient;
     }
 
     public ChatClient resolve(String model){
@@ -42,6 +45,9 @@ public class ClientResolver {
         }
         if ("groq".equalsIgnoreCase(model)) {
             return groqClient;
+        }
+        if ("minimax".equalsIgnoreCase(model)) {
+            return minimaxClient;
         }
 
         return geminiClient;

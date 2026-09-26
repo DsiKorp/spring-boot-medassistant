@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: ollama, gemini, openai, anthropic, groq
+    active: ollama, gemini, openai, anthropic, groq, minimax
   application:
     name: iamedassistant
   threads:

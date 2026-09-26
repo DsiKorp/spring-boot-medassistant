@@ -1,0 +1,11 @@
+spring:
+  ai:
+    minimax:
+      api-key: ${MINIMAX_AI_KEY}
+      base-url: ${MINIMAX_AI_BASE_URL}
+      chat:
+        options:
+          model: ${MINIMAX_AI_MODEL}
+          temperature: 0.2
+          top-p: 0.85
+          max-tokens: 2048
