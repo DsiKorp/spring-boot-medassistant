@@ -1,0 +1,15 @@
+spring:
+  #  autoconfigure:
+  #    exclude:
+  #      - org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
+  #      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_AI_KEY}
+      base-url: ${ANTHROPIC_AI_BASE_URL}
+      chat:
+        options:
+          model: ${ANTHROPIC_AI_MODEL}
+          #temperature: 0.2
+          #top-p: 0.85
+          max-tokens: 2048

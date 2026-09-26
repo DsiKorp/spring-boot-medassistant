@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: ollama, gemini
+    active: ollama, gemini, openai, anthropic
   application:
     name: iamedassistant
   threads:
@@ -21,3 +21,8 @@ spring:
       hibernate:
         "[format_sql]": true
         "[dialect]": org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.springframework.ai: DEBUG
+    com.openai: DEBUG
+

@@ -125,3 +125,6 @@ src/main/resources/
 - **Carga de `.env` doble.** `spring-dotenv` está como dependencia pero solo el `EnvironmentPostProcessor` propio está registrado. No actives el autoconfig de `spring-dotenv` o `.env` se cargará dos veces.
 - **Sin CI.** No hay workflows en `.github/`, no hay lint adicional al de Spring Boot starter defaults.
 - **VS Code.** `.vscode/launch.json` (gitignored) pasa `.env` al launcher; IDE debug usa esa config automáticamente. `./mvnw` no — se cubre con el `EnvironmentPostProcessor`.
+
+curl https://api.openai.com/v1/models \
+-H "Authorization: Bearer $(grep OPENAI_AI_KEY .env | cut -d= -f2)" | jq '.data[].id' | grep -E 'gpt|o[0-9]' | head -30

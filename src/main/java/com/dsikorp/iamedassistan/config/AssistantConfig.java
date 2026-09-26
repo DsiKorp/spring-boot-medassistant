@@ -3,9 +3,11 @@ package com.dsikorp.iamedassistan.config;
 import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
 import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -44,6 +46,28 @@ public class AssistantConfig {
 
     @Bean("ollamaClient")
     ChatClient ollamaClient(OllamaChatModel chatModel) throws IOException {
+        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
+                .replace("{currentDate}", LocalDate.now().toString());
+
+        return ChatClient.builder(chatModel)
+                .defaultSystem(systemPrompt)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .build();
+    }
+
+    @Bean("openiaClient")
+    ChatClient openiaClient(OpenAiChatModel chatModel) throws IOException {
+        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
+                .replace("{currentDate}", LocalDate.now().toString());
+
+        return ChatClient.builder(chatModel)
+                .defaultSystem(systemPrompt)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .build();
+    }
+
+    @Bean("anthropicClient")
+    ChatClient anthropicClient(AnthropicChatModel chatModel) throws IOException {
         String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
                 .replace("{currentDate}", LocalDate.now().toString());
 

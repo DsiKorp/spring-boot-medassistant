@@ -1,0 +1,13 @@
+spring:
+  #  autoconfigure:
+  #    exclude:
+  #      - org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
+  #      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
+  ai:
+    openai:
+      api-key: ${OPENAI_AI_KEY}
+      chat:
+        options:
+          model: ${OPENAI_AI_MODEL}
+          #temperature: 0.3
+          #top-p: 0.85
