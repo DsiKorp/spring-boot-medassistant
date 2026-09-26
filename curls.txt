@@ -1,0 +1,8 @@
+curl -N -i -X POST http://localhost:8080/api/v1/chat/stream \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Hola","model":"gemini"}'
+
+
+curl -X POST http://localhost:8080/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"¿Qué es la diabetes?","model":"groq"}'

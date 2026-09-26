@@ -1,0 +1,11 @@
+spring:
+  ai:
+    groq:
+      api-key: ${GROQ_AI_API_KEY}
+      base-url: ${GROQ_AI_URL}
+      chat:
+        options:
+          model: ${GROQ_AI_MODEL}
+          temperature: 0.2
+          top-p: 0.85
+          max-tokens: 2048
