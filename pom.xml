@@ -99,17 +99,17 @@
             <scope>compile</scope>
         </dependency>
         <!-- https://mapstruct.org/documentation/installation/-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.mapstruct</groupId>-->
-        <!--			<artifactId>mapstruct</artifactId>-->
-        <!--			<version>${org.mapstruct.version}</version>-->
-        <!--		</dependency>-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.mapstruct</groupId>-->
-        <!--			<artifactId>mapstruct-processor</artifactId>-->
-        <!--			<version>${org.mapstruct.version}</version>-->
-        <!--			<scope>provided</scope>-->
-        <!--		</dependency>-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${org.mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -156,11 +156,11 @@
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                 </path>
-                                <!--                                <path>-->
-                                <!--                                    <groupId>org.mapstruct</groupId>-->
-                                <!--                                    <artifactId>mapstruct-processor</artifactId>-->
-                                <!--                                    <version>${org.mapstruct.version}</version>-->
-                                <!--                                </path>-->
+                                <path>
+                                    <groupId>org.mapstruct</groupId>
+                                    <artifactId>mapstruct-processor</artifactId>
+                                    <version>${org.mapstruct.version}</version>
+                                </path>
                             </annotationProcessorPaths>
                         </configuration>
                     </execution>
