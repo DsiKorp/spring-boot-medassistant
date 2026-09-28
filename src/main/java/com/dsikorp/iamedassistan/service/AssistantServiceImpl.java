@@ -1,13 +1,10 @@
 package com.dsikorp.iamedassistan.service;
 
 import com.dsikorp.iamedassistan.config.ClientResolver;
-import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;

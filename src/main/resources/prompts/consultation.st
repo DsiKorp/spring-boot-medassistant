@@ -1,3 +1,6 @@
+// 5. Usa todo junto, few shot y cadena de pensamiento
+// Cada ejemplo muestra el racionamiento paso a paso y después la respuesta con formato.
+// El módelo aprende las 2 cosas al mismo tiempo.
 Analizá la consulta del siguiente paciente siguiendo el proceso de razonamiento y el formato de los ejemplos.
 
 Ejemplo 1:

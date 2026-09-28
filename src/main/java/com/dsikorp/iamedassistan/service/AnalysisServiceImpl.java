@@ -8,7 +8,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -38,7 +36,7 @@ public class AnalysisServiceImpl implements AnalysisService{
     @Override
     public ConditionSummaryDto summarizeCondition(String condition, String model) {
 
-        log.info("1. Análisis estructurado de condición: {}, modelo: {}", condition, model);
+        log.info("1. summarizeCondition Análisis estructurado de condición: {}, modelo: {}", condition, model);
         log.info("==================================================================================");
 
 //        1 cadena, .entity() hace todo
@@ -46,7 +44,7 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .prompt()
                 .user("Proporcioná un resumen médico educativo sobre: " + condition)
                 .call()
-                .entity(ConditionSummaryDto.class);
+                .entity(ConditionSummaryDto.class);  // Salida estructurada
 
         // 5 pasos, enfoque manual
         ////BeanOutputConverter<ConditionSummary> converter = new BeanOutputConverter<>(ConditionSummary.class);
@@ -86,6 +84,9 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .call()
                 .entity(new ParameterizedTypeReference<>() {
                 });
+
+        // ParameterizedTypeReference clase anonima que preserva la información generica <List<ConditionSummary>>(),
+        // nos permite obtener las listas tipadas
     }
 
     @Override

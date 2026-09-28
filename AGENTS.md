@@ -7,7 +7,7 @@ Spring Boot 4.1 / Java 25 / Spring AI 2.0 REST service. Exposes a medical-assist
 - Package root: `com.dsikorp.iamedassistan` (note: typo'd — `iamedassistan`, not `iamedassistant`).
   - `IamedassistanApplication` — main entry.
   - `controller/ChatController` — `/api/v1/chat*` endpoints (`chat`, `chat/stream` SSE, `explain`, `symptoms`, `diagnose`, `consult`).
-  - `service/AssistantServiceImpl` — routes between two `ChatClient` beans based on the `model` request field: `"ollama"` → `ollamaClient`, anything else → `geminiClient` (see `resolveClient`).
+  - `service/AssistantServiceImpl` — routes between two `ChatClient` beans based on the `model` request field: `"ollama"` → `ollamaClient`, anything else → `geminiClient` (see `resolve`).
   - `config/AssistantConfig` — declares the two named `ChatClient` beans (`geminiClient`, `ollamaClient`), each pre-loaded with `prompts/system-prompt.st`.
   - `config/DotenvEnvironmentPostProcessor` — custom `.env` loader registered via `src/main/resources/META-INF/spring/org.springframework.boot.env.EnvironmentPostProcessor.imports`. Runs at `HIGHEST_PRECEDENCE`.
   - `dto/ChatRequestDto` — `{ prompt: @NotBlank, model: String }`.

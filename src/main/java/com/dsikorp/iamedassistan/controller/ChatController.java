@@ -19,12 +19,12 @@ public class ChatController {
     private final AssistantService assistantService;
 
     @PostMapping
-    public ResponseEntity<String> chat(@RequestBody ChatRequestDto request) {
+    public ResponseEntity<String> chat(@Valid @RequestBody ChatRequestDto request) {
         return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model()));
     }
 
     @PostMapping(value = "/stream", produces = "text/event-stream; charset=UTF-8")
-    public Flux<String> chatStream(@RequestBody ChatRequestDto request) {
+    public Flux<String> chatStream(@Valid @RequestBody ChatRequestDto request) {
         return assistantService.chatStream(request.prompt(), request.model());
     }
 
@@ -39,18 +39,14 @@ public class ChatController {
     }
 
     @PostMapping("/diagnose")
-    public ResponseEntity<String> diagnoseWithReasoning(
-            @Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(
-                assistantService.diagnoseWithReasoning(
+    public ResponseEntity<String> diagnoseWithReasoning(@Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(assistantService.diagnoseWithReasoning(
                         request.prompt(), request.model()));
     }
 
     @PostMapping("/consult")
-    public ResponseEntity<String> consult(
-            @Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(
-                assistantService.consult(
+    public ResponseEntity<String> consult(@Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(assistantService.consult(
                         request.prompt(), request.model()));
     }
 }

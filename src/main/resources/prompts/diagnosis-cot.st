@@ -1,4 +1,5 @@
-Sos un asistente médico educativo. Un paciente describe los siguientes síntomas:
+// 3. Chain of thought: El razonamiento
+Eres un asistente médico educativo. Un paciente describe los siguientes síntomas:
 
 "{sintomas}"
 
