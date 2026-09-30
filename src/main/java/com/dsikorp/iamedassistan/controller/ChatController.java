@@ -5,6 +5,8 @@ import com.dsikorp.iamedassistan.service.AssistantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -17,7 +19,10 @@ public class ChatController {
 
     @PostMapping
     public ResponseEntity<String> chat(@Valid @RequestBody ChatRequestDto request,
-                                       @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+                                       @AuthenticationPrincipal Jwt jwt) {
+                                       //@RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+
+        Long userId = jwt.getClaim("userId");
         return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model(),  userId));
     }
 

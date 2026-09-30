@@ -21,8 +21,13 @@ spring:
       hibernate:
         "[format_sql]": true
         "[dialect]": org.hibernate.dialect.PostgreSQLDialect
-logging:
-  level:
-    org.springframework.ai: DEBUG
-    com.openai: DEBUG
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/medassistant
+#logging:
+#  level:
+#    org.springframework.ai: DEBUG
+#    com.openai: DEBUG
 
