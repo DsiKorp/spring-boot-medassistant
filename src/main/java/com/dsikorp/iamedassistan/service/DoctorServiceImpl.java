@@ -2,6 +2,7 @@ package com.dsikorp.iamedassistan.service;
 
 
 import com.dsikorp.iamedassistan.dto.DoctorInfo;
+import com.dsikorp.iamedassistan.mapper.DoctorInfoMapper;
 import com.dsikorp.iamedassistan.model.Doctor;
 import com.dsikorp.iamedassistan.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final DoctorInfoMapper doctorInfoMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -27,18 +29,19 @@ public class DoctorServiceImpl implements DoctorService {
                         query, query, query
                 )
                 .stream()
-                .map(this::toDoctorInfo)
+                .map(doctorInfoMapper::toDoctorInfo)
+                //.map(this::toDoctorInfo)
                 .toList();
 
     }
 
-    private DoctorInfo toDoctorInfo(Doctor doctor) {
-        return new DoctorInfo(
-                doctor.getFirstName(),
-                doctor.getLastName(),
-                doctor.getSpecialty(),
-                doctor.getLicenseNumber(),
-                doctor.getPhone(),
-                doctor.getOffice());
-    }
+//    private DoctorInfo toDoctorInfo(Doctor doctor) {
+//        return new DoctorInfo(
+//                doctor.getFirstName(),
+//                doctor.getLastName(),
+//                doctor.getSpecialty(),
+//                doctor.getLicenseNumber(),
+//                doctor.getPhone(),
+//                doctor.getOffice());
+//    }
 }

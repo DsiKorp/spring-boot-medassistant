@@ -1,12 +1,11 @@
 package com.dsikorp.iamedassistan.dto;
 
 // Tipo de respuesta de la tool
-public record DoctorInfo(
+public record PatientInfo(
         String firstName,
         String lastName,
-        String specialty,
-        String licenseNumber,
-        String phone,
-        String office
+        String dateOfBirth,
+        String allergies,
+        String conditions
 ) {
 }

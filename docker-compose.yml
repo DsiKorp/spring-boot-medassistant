@@ -1,7 +1,8 @@
 services:
+  ################################################################
   postgress:
     image: postgres:17.1-alpine
-    container_name: medassistant-db-container
+    container_name: postgress-medassistant-db-container
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -10,5 +11,34 @@ services:
       - "5432:5432"
     volumes:
       - medassistant-data:/var/lib/postgresql/data
+  ################################################################
+  postgres-keycloak:
+    image: postgres:17.1-alpine
+    container_name: postgres-keycloak-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_KEYCLOAK}
+      POSTGRES_USER: ${POSTGRES_USER_KEYCLOAK}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_KEYCLOAK}
+    ports:
+      - "5433:5432"
+    volumes:
+      - keycloak-data:/var/lib/postgresql/data
+  ################################################################
+  keycloak:
+    image: keycloak/keycloak:26.7.4
+    container_name: ia-medassistant-keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/${POSTGRES_DB_KEYCLOAK}
+      KC_DB_USERNAME: ${POSTGRES_USER_KEYCLOAK}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD_KEYCLOAK}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - "8090:8080"
+    depends_on:
+      - postgres-keycloak
 volumes:
   medassistant-data:
+  keycloak-data:

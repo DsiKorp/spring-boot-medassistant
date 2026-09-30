@@ -99,9 +99,9 @@ public class AnalysisServiceImpl implements AnalysisService{
 
         return clientResolver.resolve(model)
                 .prompt()
-                .user(message)
+                .user(message) // forma al pensamiento
                 .call()
-                .entity(SymptomAnalysisDto.class);
+                .entity(SymptomAnalysisDto.class);  // forma a la respuesta
     }
 
     @Override

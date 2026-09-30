@@ -1,3 +1,6 @@
+// 6. Template para analisis estructurado (structured output con prompt),
+// la estructura esta de la respuesta está controlada por el record dto.
+// Este template se dedica únicamente al razonamientos
 Sos un asistente médico educativo. Un paciente describe los siguientes síntomas:
 
 "{sintomas}"

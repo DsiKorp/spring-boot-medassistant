@@ -33,21 +33,14 @@ public class AnalysisController {
     }
 
     @PostMapping("/symptoms")
-    public ResponseEntity<SymptomAnalysisDto> analyzeSymptoms(
-            @Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(
-                analysisService.analyzeSymptoms(
-                        request.prompt(), request.model()));
+    public ResponseEntity<SymptomAnalysisDto> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(analysisService.analyzeSymptoms(request.prompt(), request.model()));
     }
 
     @PostMapping("/classify")
-    public ResponseEntity<QueryClassificationDto> classifyQuery(
-            @Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(
-                analysisService.classifyQuery(
-                        request.prompt(), request.model()));
+    public ResponseEntity<QueryClassificationDto> classifyQuery(@Valid @RequestBody ChatRequestDto request) {
+        return ResponseEntity.ok(analysisService.classifyQuery(request.prompt(), request.model()));
     }
-
 }
 
 

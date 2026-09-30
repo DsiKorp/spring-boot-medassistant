@@ -3,6 +3,7 @@ package com.dsikorp.iamedassistan.dto.analysis;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 public record QueryClassificationDto(
+
         @JsonPropertyDescription("Tipo de consulta identificada")
         QueryTypeEnum type,
 

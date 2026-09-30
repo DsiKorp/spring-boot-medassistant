@@ -20,10 +20,12 @@ public class AppointmentSearchTool {
     @Tool(description = "Buscar turnos médicos disponibles para una especialidad y fecha. Usar cuando el " +
             "usuario pregunte por disponibilidad de turnos o citas médicas.")
     public List<AppointmentInfo> searchAppointments(
+
             @ToolParam(description = "Especialidad médica, por ejemplo: cardiología, pediatría, dermatología")
-                        String specialty,
+            String specialty,
+
             @ToolParam(description = "Fecha de la cita en formato yyyy-MM-dd")
-                        String date
+            String date
     ){
         log.info("Tool invocada — searchAppointments: specialty={}, date={}", specialty, date);
 

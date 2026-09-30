@@ -3,6 +3,7 @@ package com.dsikorp.iamedassistan.config;
 import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
 import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
 import com.anthropic.models.messages.Model;
+import com.dsikorp.iamedassistan.tool.PatientInfoTool;
 import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.anthropic.AnthropicChatModel;
@@ -36,8 +37,19 @@ public class AssistantConfig {
 
     private final AppointmentSearchTool appointmentSearchTool;
     private final DoctorInfoTool doctorInfoTool;
+    private final PatientInfoTool patientInfoTool;
 
-//    @Bean
+    /**
+     * Obtiene el prompt del sistema desde un archivo, reemplazando el placeholder
+     * {currentDate} con la fecha actual. Debe ser llamado antes de crear cualquier
+     * cliente de chat para establecer su system prompt.
+     */
+    private String getSystemPrompt() throws IOException {
+        return systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
+                .replace("{currentDate}", LocalDate.now().toString());
+    }
+
+//    @Bean  // si fuera un solo modelo
 //    ChatClient chatClient(ChatClient.Builder builder) {
 //        return builder.build();
 //    }
@@ -45,45 +57,36 @@ public class AssistantConfig {
     @Bean("geminiClient")
     ChatClient geminiClient(GoogleGenAiChatModel chatModel) throws IOException {
 
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
-
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 
     @Bean("ollamaClient")
     ChatClient ollamaClient(OllamaChatModel chatModel) throws IOException {
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 
     @Bean("openiaClient")
     ChatClient openiaClient(OpenAiChatModel chatModel) throws IOException {
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 
     @Bean("anthropicClient")
     ChatClient anthropicClient(AnthropicChatModel chatModel) throws IOException {
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 
@@ -137,12 +140,9 @@ public class AssistantConfig {
                 .options(options)
                 .build();
 
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
-
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 
@@ -178,12 +178,9 @@ public class AssistantConfig {
                 .observationRegistry(ObservationRegistry.NOOP)
                 .build();
 
-        String systemPrompt = systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
-                .replace("{currentDate}", LocalDate.now().toString());
-
         return ChatClient.builder(chatModel)
-                .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool, doctorInfoTool)
+                .defaultSystem(getSystemPrompt())
+                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
                 .build();
     }
 }

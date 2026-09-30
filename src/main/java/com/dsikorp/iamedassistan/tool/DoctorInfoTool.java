@@ -21,7 +21,7 @@ public class DoctorInfoTool {
             "Usar cuando el usuario pregunte por datos de un doctor, quién atiende una especialidad, " +
             "o información de contacto de un médico.")
     public List<DoctorInfo> searchDoctors(
-            @ToolParam(description = "Solo el apellido del médico o el nombre de " +
+            @ToolParam(description = "Solo el apellido del médico, o el nombre del médico o el nombre de " +
                     "la especialidad, sin títulos como Dr. o Dra.") String query) {
 
         log.info("Tool invocada — searchDoctors: query={}", query);

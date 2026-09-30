@@ -5,10 +5,7 @@ import com.dsikorp.iamedassistan.service.AssistantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -19,8 +16,9 @@ public class ChatController {
     private final AssistantService assistantService;
 
     @PostMapping
-    public ResponseEntity<String> chat(@Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model()));
+    public ResponseEntity<String> chat(@Valid @RequestBody ChatRequestDto request,
+                                       @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+        return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model(),  userId));
     }
 
     @PostMapping(value = "/stream", produces = "text/event-stream; charset=UTF-8")
