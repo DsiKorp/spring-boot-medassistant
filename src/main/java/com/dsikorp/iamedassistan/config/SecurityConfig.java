@@ -1,5 +1,6 @@
 package com.dsikorp.iamedassistan.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
+@Slf4j
 public class SecurityConfig {
 
     @Bean
@@ -26,6 +28,7 @@ public class SecurityConfig {
                         )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/**").hasAnyRole("PATIENT", "ADMIN")
+                        //.requestMatchers("/api/v1/**").hasRole("PATIENT")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer( auth2 ->
@@ -51,10 +54,18 @@ public class SecurityConfig {
 //                    .collect(Collectors.toList());
 //        });
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+
+            log.info("JWT: {}", jwt);
+
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            log.info("realmAccess: {}", realmAccess);
+
             if (realmAccess == null) return List.of();
 
             Object rolesObj = realmAccess.get("roles");
+            log.info("rolesObj: {}", rolesObj);
+
+            // Si rolesObj no es una lista de roles, retorna una lista vacia.
             if (!(rolesObj instanceof List<?> roles)) return List.of();
 
             return roles.stream()
@@ -63,6 +74,7 @@ public class SecurityConfig {
                     .collect(Collectors.toList());
         });
 
+        log.info("converter: {}", converter);
         return converter;
     }
 }

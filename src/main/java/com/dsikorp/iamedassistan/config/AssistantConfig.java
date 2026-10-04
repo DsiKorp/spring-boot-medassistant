@@ -1,9 +1,7 @@
 package com.dsikorp.iamedassistan.config;
 
-import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
-import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
+import com.dsikorp.iamedassistan.tool.*;
 import com.anthropic.models.messages.Model;
-import com.dsikorp.iamedassistan.tool.PatientInfoTool;
 import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.anthropic.AnthropicChatModel;
@@ -38,6 +36,8 @@ public class AssistantConfig {
     private final AppointmentSearchTool appointmentSearchTool;
     private final DoctorInfoTool doctorInfoTool;
     private final PatientInfoTool patientInfoTool;
+    private final DrugInfoTool drugInfoTool;
+    private final AppointmentBookingTool appointmentBookingTool;
 
     /**
      * Obtiene el prompt del sistema desde un archivo, reemplazando el placeholder
@@ -59,7 +59,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 
@@ -68,7 +74,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 
@@ -77,7 +89,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 
@@ -86,7 +104,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 
@@ -142,7 +166,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 
@@ -180,7 +210,13 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
-                .defaultTools(appointmentSearchTool, doctorInfoTool, patientInfoTool)
+                .defaultTools(
+                        appointmentSearchTool,
+                        doctorInfoTool,
+                        patientInfoTool,
+                        drugInfoTool,
+                        appointmentBookingTool
+                )
                 .build();
     }
 }

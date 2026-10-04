@@ -28,7 +28,7 @@ public class AppointmentSearchTool {
             String date
     ){
         log.info("Tool invocada — searchAppointments: specialty={}, date={}", specialty, date);
-
+        // puede generar un DateTimeParseException
         return appointmentService.findAvailableAppointments(specialty, LocalDate.parse(date));
     }
 }

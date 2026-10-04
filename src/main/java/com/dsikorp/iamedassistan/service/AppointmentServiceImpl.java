@@ -37,9 +37,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 return List.of();
             }
 
+            log.info("Hay {} doctores disponibles para la especialidad: {}", doctors.size(), specialty);
+
             var doctorNames = buildDoctorNameMap(doctors);
+            log.info("doctorNames: {}", doctorNames);
+
             var doctorIds = new ArrayList<>(doctorNames.keySet());
+            log.info("doctorIds: {}", doctorIds);
+
             var appointments = appointmentRepository.findByDoctorIdInAndDateAndAvailableTrue(doctorIds, date);
+            log.info("appointments: {}", appointments);
 
             return toAppointmentInfoList(appointments, doctorNames, specialty);
     }
@@ -52,13 +59,20 @@ public class AppointmentServiceImpl implements AppointmentService {
                 specialty, date, time, patientId);
 
         var doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
+        log.info("bookAppointment Specialty = {}, doctors: {}", specialty, doctors);
+
         if(doctors.isEmpty()){
             return "No se encontró la especialidad: " + specialty;
         }
 
         var doctorIds = doctors.stream().map(Doctor::getId).toList();
+        log.info("bookAppointment DoctorIds = {}", doctorIds);
+
         var appointment = findAvailableAppointment(doctorIds, date, time);
-        if(appointment==null){
+        log.info("bookAppointment appointment = {}", appointment);
+
+        if(appointment == null){
+            log.info("No hay appointments disponibles");
             return "El turno no está disponible.";
         }
 
@@ -66,13 +80,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setPatientId(patientId);
 
         appointmentRepository.save(appointment);
+        log.info("bookAppointment Saved appointment = {}", appointment);
 
         return "Turno reservado exitosamente.";
     }
 
     @Transactional(readOnly = true)
     private Appointment findAvailableAppointment(List<Long> doctorIds, LocalDate date, LocalTime time){
-        return appointmentRepository.findByDoctorIdInAndDateAndStartTimeAndAvailableTrue(doctorIds,date,time)
+        return appointmentRepository.findByDoctorIdInAndDateAndStartTimeAndAvailableTrue(doctorIds, date, time)
                 .stream()
                 .findFirst()
                 .orElse(null);
