@@ -4,6 +4,7 @@ import com.dsikorp.iamedassistan.config.ClientResolver;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -34,12 +35,11 @@ public class AssistantServiceImpl implements AssistantService {
     private Resource consultationResource;
 
     private PromptTemplate explainConditionTemplate;
-
     private PromptTemplate symptomAnalysisTemplate;
-
     private PromptTemplate diagnosisCotTemplate;
-
     private PromptTemplate consultationTemplate;
+
+    private final ChatMemory chatMemory;
 
 //    public AssistantServiceImpl(
 //            @Qualifier("geminiClient") ChatClient geminiClient,
@@ -63,11 +63,13 @@ public class AssistantServiceImpl implements AssistantService {
         log.info("Chat request - modelo: {} ", model);
         log.info("Chat request - userId: {} ", userId);
         log.info("Chat request - role: {} ", role);
+        log.info("Chat request - prompt: {} ", prompt);
 
         return clientResolver.resolve(model)
                 .prompt(prompt)
                 .toolContext(Map.of("userId", userId, "role", role))
                 //.tools(appointmentSearchTool)
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .content();
     }
@@ -82,6 +84,7 @@ public class AssistantServiceImpl implements AssistantService {
         return clientResolver.resolve(model)
                 .prompt(prompt)
                 .toolContext(Map.of("userId", userId, "role", role))
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .stream()
                 .content();
     }
@@ -102,6 +105,7 @@ public class AssistantServiceImpl implements AssistantService {
 
         return clientResolver.resolve(model)
                 .prompt(message)
+                //.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .content();
     }
@@ -114,6 +118,7 @@ public class AssistantServiceImpl implements AssistantService {
 
         return clientResolver.resolve(model)
                 .prompt(message)
+                //.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .content();
     }
@@ -126,6 +131,7 @@ public class AssistantServiceImpl implements AssistantService {
 
         return clientResolver.resolve(model)
                 .prompt(message)
+                //.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .content();
     }
@@ -136,6 +142,7 @@ public class AssistantServiceImpl implements AssistantService {
         String message = consultationTemplate.render(Map.of("consulta", query));
         return clientResolver.resolve(model)
                 .prompt(message)
+                //.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .content();
     }

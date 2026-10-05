@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -38,6 +40,7 @@ public class AssistantConfig {
     private final PatientInfoTool patientInfoTool;
     private final DrugInfoTool drugInfoTool;
     private final AppointmentBookingTool appointmentBookingTool;
+    private final ChatMemory chatMemory;
 
     /**
      * Obtiene el prompt del sistema desde un archivo, reemplazando el placeholder
@@ -66,6 +69,7 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
@@ -96,6 +100,7 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
@@ -111,6 +116,7 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
@@ -173,6 +179,7 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
@@ -217,6 +224,7 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 }
