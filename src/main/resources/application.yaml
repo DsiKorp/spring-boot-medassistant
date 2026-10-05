@@ -1,6 +1,9 @@
 server:
   port: 8080
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.vectorstore.chroma.autoconfigure.ChromaVectorStoreAutoConfiguration
   profiles:
     active: ollama, gemini, openai, anthropic, groq, minimax
   application:
@@ -32,6 +35,11 @@ spring:
         repository:
           jdbc:
             initialize-schema: always
+    vectorstore:
+      chroma:
+        url: http://localhost:8000
+        #collection-name: medassistant # @Bean("ollamaVectorStore")
+        #initialize-schema: true
 #logging:
 #  level:
 #    org.springframework.ai: DEBUG

@@ -34,7 +34,7 @@ Si `model` viene ausente o con un valor desconocido, se enruta a **Gemini**.
 | Servicio | Dónde | Cómo levantarlo |
 |---|---|---|
 | PostgreSQL 17 | `localhost:5432` | `docker compose up -d postgress` (servicio nombrado `postgress` por typo en `docker-compose.yml`) |
-| Ollama (opcional, solo si usás `model: "ollama"`) | `http://localhost:11434` | Instalar Ollama y `ollama pull llama3.2:3b` (mínimo). Ver `models.txt` para más modelos. |
+| Ollama (opcional, solo si usás `model: "ollama"`) | `http://localhost:11434` | Instalar Ollama y descargar los modelos necesarios: `ollama pull llama3.2:3b` (mínimo, chat) y `ollama pull nomic-embed-text` (embeddings). Ver `models.txt` para más modelos. |
 | API keys | variables en `.env` | En el archivo `.env` en la raíz del repo. |
 
 Archivo `.env` requerido en la raíz (ver `.env.template` para la plantilla completa):

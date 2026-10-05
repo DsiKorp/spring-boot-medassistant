@@ -39,6 +39,16 @@ services:
       - "8090:8080"
     depends_on:
       - postgres-keycloak
+  chroma:
+    image: chromadb/chroma
+    container_name: medassistant-chroma
+    ports:
+      - "8000:8000"
+    environment:
+      - IS_PERSISTENT=TRUE
+    volumes:
+      - chroma-data:/chroma/chroma
 volumes:
   medassistant-data:
   keycloak-data:
+  chroma-data:
