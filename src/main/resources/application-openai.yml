@@ -11,3 +11,6 @@ spring:
           model: ${OPENAI_AI_MODEL}
           #temperature: 0.3
           #top-p: 0.85
+      embedding:
+        options:
+          model: ${OPENAI_AI_EMBEDDING_MODEL:text-embedding-3-small}

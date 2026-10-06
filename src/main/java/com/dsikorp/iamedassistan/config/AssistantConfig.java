@@ -113,7 +113,8 @@ public class AssistantConfig {
     }
 
     @Bean("openiaClient")
-    ChatClient openiaClient(OpenAiChatModel chatModel) throws IOException {
+    ChatClient openiaClient(OpenAiChatModel chatModel,
+                            @Qualifier("openiaVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
@@ -124,12 +125,18 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.7).topK(3).build()
+                                ).build()
+                )
                 .build();
     }
 
     @Bean("anthropicClient")
-    ChatClient anthropicClient(AnthropicChatModel chatModel) throws IOException {
+    ChatClient anthropicClient(AnthropicChatModel chatModel,
+                               @Qualifier("anthropicVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(getSystemPrompt())
@@ -140,7 +147,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.7).topK(3).build()
+                                ).build()
+                )
                 .build();
     }
 
@@ -154,7 +166,8 @@ public class AssistantConfig {
     ChatClient groqClient(
             @Value("${spring.ai.groq.api-key}") String apiKey,
             @Value("${spring.ai.groq.base-url}") String baseUrl,
-            @Value("${spring.ai.groq.chat.options.model}") String model
+            @Value("${spring.ai.groq.chat.options.model}") String model,
+            @Qualifier("groqVectorStore") VectorStore vectorStore
     ) throws IOException {
         OpenAIClient syncClient = OpenAiSetup.setupSyncClient(
                 baseUrl, apiKey,
@@ -203,7 +216,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.7).topK(3).build()
+                                ).build()
+                )
                 .build();
     }
 
@@ -223,7 +241,8 @@ public class AssistantConfig {
     ChatClient minimaxClient(
             @Value("${spring.ai.minimax.api-key}") String apiKey,
             @Value("${spring.ai.minimax.base-url}") String baseUrl,
-            @Value("${spring.ai.minimax.chat.options.model}") String model
+            @Value("${spring.ai.minimax.chat.options.model}") String model,
+            @Qualifier("minimaxVectorStore") VectorStore vectorStore
     ) throws IOException {
         AnthropicChatOptions options = AnthropicChatOptions.builder()
                 .model(Model.of(model))
@@ -248,13 +267,18 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.7).topK(3).build()
+                                ).build()
+                )
                 .build();
     }
 
     @Bean("googleVectorStore")
     VectorStore googleVectorStore(
-            @Qualifier("googleGenAiTextEmbedding") EmbeddingModel embeddingModel,
+            @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel,
             ChromaApi chromaApi){
         return ChromaVectorStore.builder(chromaApi, embeddingModel)
                 .collectionName("medassistant_google")
@@ -268,6 +292,46 @@ public class AssistantConfig {
             ChromaApi chromaApi) {
         return ChromaVectorStore.builder(chromaApi, embedding)
                 .collectionName("medassistant_ollama")
+                .initializeSchema(true)
+                .build();
+    }
+
+    @Bean("openiaVectorStore")
+    VectorStore openiaVectorStore(
+            @Qualifier("openAiEmbeddingModel") EmbeddingModel embedding,
+            ChromaApi chromaApi) {
+        return ChromaVectorStore.builder(chromaApi, embedding)
+                .collectionName("medassistant_openia")
+                .initializeSchema(true)
+                .build();
+    }
+
+    @Bean("anthropicVectorStore")
+    VectorStore anthropicVectorStore(
+            @Qualifier("openAiEmbeddingModel") EmbeddingModel embedding,
+            ChromaApi chromaApi) {
+        return ChromaVectorStore.builder(chromaApi, embedding)
+                .collectionName("medassistant_anthropic")
+                .initializeSchema(true)
+                .build();
+    }
+
+    @Bean("groqVectorStore")
+    VectorStore groqVectorStore(
+            @Qualifier("openAiEmbeddingModel") EmbeddingModel embedding,
+            ChromaApi chromaApi) {
+        return ChromaVectorStore.builder(chromaApi, embedding)
+                .collectionName("medassistant_groq")
+                .initializeSchema(true)
+                .build();
+    }
+
+    @Bean("minimaxVectorStore")
+    VectorStore minimaxVectorStore(
+            @Qualifier("openAiEmbeddingModel") EmbeddingModel embedding,
+            ChromaApi chromaApi) {
+        return ChromaVectorStore.builder(chromaApi, embedding)
+                .collectionName("medassistant_minimax")
                 .initializeSchema(true)
                 .build();
     }
