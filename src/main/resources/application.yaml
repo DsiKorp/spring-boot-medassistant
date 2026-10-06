@@ -38,7 +38,7 @@ spring:
     vectorstore:
       chroma:
         url: http://localhost:8000
-        #collection-name: medassistant # @Bean("ollamaVectorStore")
+        #collection-name: medassistant # @Bean("ollamaVectorStore") y @Bean("ollamaVectorStore")
         #initialize-schema: true
 #logging:
 #  level:

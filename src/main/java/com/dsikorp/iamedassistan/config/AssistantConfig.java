@@ -78,10 +78,12 @@ public class AssistantConfig {
                         appointmentBookingTool
                 )
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        // embedding model
                         QuestionAnswerAdvisor.builder(vectorStore)
                                 .searchRequest(SearchRequest.builder()
                                         .similarityThreshold(0.7).topK(3).build()
                                 ).build()
+                        // embedding model
                 )
                 .build();
     }
@@ -100,10 +102,12 @@ public class AssistantConfig {
                         appointmentBookingTool
                 )
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        // embedding model
                         QuestionAnswerAdvisor.builder(vectorStore)
                                 .searchRequest(SearchRequest.builder()
                                         .similarityThreshold(0.7).topK(3).build()
                                 ).build()
+                        // embedding model
                 )
                 .build();
     }
