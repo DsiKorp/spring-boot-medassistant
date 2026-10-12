@@ -7,6 +7,7 @@ import com.dsikorp.iamedassistan.dto.analysis.SymptomAnalysisDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,7 +35,7 @@ public class AnalysisServiceImpl implements AnalysisService{
     }
 
     @Override
-    public ConditionSummaryDto summarizeCondition(String condition, String model) {
+    public ConditionSummaryDto summarizeCondition(String condition, String model, Long userId) {
 
         log.info("1. summarizeCondition Análisis estructurado de condición: {}, modelo: {}", condition, model);
         log.info("==================================================================================");
@@ -43,6 +44,7 @@ public class AnalysisServiceImpl implements AnalysisService{
         return clientResolver.resolve(model)
                 .prompt()
                 .user("Proporcioná un resumen médico educativo sobre: " + condition)
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .entity(ConditionSummaryDto.class);  // Salida estructurada
 
@@ -74,13 +76,14 @@ public class AnalysisServiceImpl implements AnalysisService{
     }
 
     @Override
-    public List<ConditionSummaryDto> listRelatedConditions(String symptoms, String model) {
+    public List<ConditionSummaryDto> listRelatedConditions(String symptoms, String model, Long userId) {
         log.info("Listado de condiciones realacionadas - modelo: {} ", model);
         return clientResolver.resolve(model)
                 .prompt()
                 .user("Listá las 3 condiciones médicas más probables " +
                         "para estos síntomas: " + symptoms
                         )
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .entity(new ParameterizedTypeReference<>() {
                 });
@@ -90,7 +93,7 @@ public class AnalysisServiceImpl implements AnalysisService{
     }
 
     @Override
-    public SymptomAnalysisDto analyzeSymptoms(String symptoms, String model) {
+    public SymptomAnalysisDto analyzeSymptoms(String symptoms, String model, Long userId) {
         log.info("Análisis estructurado de síntomas — modelo: {}", model);
 
         String message = structuredAnalysisTemplate.render(
@@ -100,12 +103,13 @@ public class AnalysisServiceImpl implements AnalysisService{
         return clientResolver.resolve(model)
                 .prompt()
                 .user(message) // forma al pensamiento
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .entity(SymptomAnalysisDto.class);  // forma a la respuesta
     }
 
     @Override
-    public QueryClassificationDto classifyQuery(String query, String model) {
+    public QueryClassificationDto classifyQuery(String query, String model, Long userId) {
         log.info("Clasificación de consulta — modelo: {}", model);
 
         return clientResolver.resolve(model)
@@ -113,6 +117,7 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .user("Clasificá la siguiente consulta de un paciente. " +
                         "Determiná qué tipo de consulta es y explicá brevemente por qué.\n\n" +
                         "Consulta del paciente: \"" + query + "\"")
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, String.valueOf(userId)))
                 .call()
                 .entity(QueryClassificationDto.class);
     }

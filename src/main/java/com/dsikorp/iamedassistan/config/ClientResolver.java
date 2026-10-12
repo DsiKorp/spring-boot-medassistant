@@ -40,18 +40,21 @@ public class ClientResolver {
         log.info("resolveClient modelo específico: {}", modelEnvSearch(model));
 
         if ("ollama".equalsIgnoreCase(model)) {
-
             return ollamaClient;
         }
+
         if ("openai".equalsIgnoreCase(model)) {
             return openaiClient;
         }
+
         if ("anthropic".equalsIgnoreCase(model)) {
             return anthropicClient;
         }
+
         if ("groq".equalsIgnoreCase(model)) {
             return groqClient;
         }
+
         if ("minimax".equalsIgnoreCase(model)) {
             return minimaxClient;
         }

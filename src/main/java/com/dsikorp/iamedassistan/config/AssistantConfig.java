@@ -3,13 +3,16 @@ package com.dsikorp.iamedassistan.config;
 import com.dsikorp.iamedassistan.tool.*;
 import com.anthropic.models.messages.Model;
 import io.micrometer.observation.ObservationRegistry;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+//import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chroma.vectorstore.ChromaApi;
 import org.springframework.ai.chroma.vectorstore.ChromaVectorStore;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -37,6 +40,7 @@ import com.openai.client.OpenAIClientAsync;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class AssistantConfig {
 
     @Value("classpath:prompts/system-prompt.st")
@@ -48,15 +52,56 @@ public class AssistantConfig {
     private final DrugInfoTool drugInfoTool;
     private final AppointmentBookingTool appointmentBookingTool;
     private final ChatMemory chatMemory;
+    private final MedicalAuditAdvisor medicalAuditAdvisor;
 
     /**
-     * Obtiene el prompt del sistema desde un archivo, reemplazando el placeholder
-     * {currentDate} con la fecha actual. Debe ser llamado antes de crear cualquier
-     * cliente de chat para establecer su system prompt.
+     * System prompt cargado una sola vez al arrancar el contexto de Spring
+     * (con el placeholder {currentDate} ya sustituido por la fecha actual).
+     * Mantenerlo en caché evita releer el classpath en cada request.
      */
-    private String getSystemPrompt() throws IOException {
-        return systemPromptResource.getContentAsString(StandardCharsets.UTF_8)
+    private String systemPrompt;
+
+    /**
+     * Carga el system prompt desde el classpath y sustituye {currentDate} por
+     * la fecha actual. Si falla, el contexto de Spring no arranca y el error
+     * aparece claro en el log de arranque.
+     */
+    @PostConstruct
+    void loadSystemPrompt() throws IOException {
+        this.systemPrompt = systemPromptResource
+                .getContentAsString(StandardCharsets.UTF_8)
                 .replace("{currentDate}", LocalDate.now().toString());
+        log.info("System prompt cargado desde classpath ({} caracteres)",
+                systemPrompt.length());
+    }
+
+    /**
+     * Construye el {@link SearchRequest} compartido por todos los beans de
+     * {@link ChatClient}: umbral de similitud 0.5 (cosine) y topK=5. Si en el
+     * futuro hay que tunear el RAG, se cambia acá una sola vez.
+     */
+    private SearchRequest buildSearchRequest() {
+        return SearchRequest.builder()
+                .similarityThreshold(0.5)
+                .topK(5)
+                .build();
+    }
+
+    /**
+     * PromptTemplate usado por el {@link QuestionAnswerAdvisor}. A diferencia del
+     * template por defecto (que obliga al LLM a responder "no puedo responder"
+     * cuando el contexto está vacío), este le indica al asistente que, si los
+     * documentos no contienen la respuesta, recurra a sus herramientas
+     * ({@code defaultTools}) o a su conocimiento general.
+     */
+    private PromptTemplate getPromptTemplate() {
+        return new PromptTemplate("""
+                Contexto de documentos médicos (usalo si es relevante para la pregunta):
+                {question_answer_context}
+                
+                Si la información no está en los documentos, podés usar tus herramientas
+                o tu conocimiento general para responder.
+                """);
     }
 
 //    @Bean  // si fuera un solo modelo
@@ -69,7 +114,7 @@ public class AssistantConfig {
                             @Qualifier("googleVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -77,12 +122,16 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        // embedding model
+                .defaultAdvisors(
+                        // config global
+                        // genera conversationId cannot be null en endpoints que no manejan esto
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
+
+                        // embedding model RAG
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                         // embedding model
                 )
                 .build();
@@ -93,7 +142,7 @@ public class AssistantConfig {
                             @Qualifier("ollamaVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -101,12 +150,13 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                .defaultAdvisors(
+                        // MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         // embedding model
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                         // embedding model
                 )
                 .build();
@@ -117,7 +167,7 @@ public class AssistantConfig {
                             @Qualifier("openiaVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -125,11 +175,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                .defaultAdvisors(
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                 )
                 .build();
     }
@@ -139,7 +190,7 @@ public class AssistantConfig {
                                @Qualifier("anthropicVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -147,11 +198,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                .defaultAdvisors(
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                 )
                 .build();
     }
@@ -208,7 +260,7 @@ public class AssistantConfig {
                 .build();
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -216,11 +268,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                .defaultAdvisors(
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                 )
                 .build();
     }
@@ -259,7 +312,7 @@ public class AssistantConfig {
                 .build();
 
         return ChatClient.builder(chatModel)
-                .defaultSystem(getSystemPrompt())
+                .defaultSystem(systemPrompt)
                 .defaultTools(
                         appointmentSearchTool,
                         doctorInfoTool,
@@ -267,11 +320,12 @@ public class AssistantConfig {
                         drugInfoTool,
                         appointmentBookingTool
                 )
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                .defaultAdvisors(
+                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(SearchRequest.builder()
-                                        .similarityThreshold(0.7).topK(3).build()
-                                ).build()
+                                .searchRequest(buildSearchRequest())
+                                .promptTemplate(getPromptTemplate())
+                                .build(), medicalAuditAdvisor
                 )
                 .build();
     }
@@ -279,7 +333,7 @@ public class AssistantConfig {
     @Bean("googleVectorStore")
     VectorStore googleVectorStore(
             @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel,
-            ChromaApi chromaApi){
+            ChromaApi chromaApi) {
         return ChromaVectorStore.builder(chromaApi, embeddingModel)
                 .collectionName("medassistant_google")
                 .initializeSchema(true)
@@ -337,7 +391,7 @@ public class AssistantConfig {
     }
 
     @Bean
-    ChromaApi chromaApi(@Value("${spring.ai.vectorstore.chroma.url}") String chromaUrl){
+    ChromaApi chromaApi(@Value("${spring.ai.vectorstore.chroma.url}") String chromaUrl) {
         return ChromaApi.builder()
                 .baseUrl(chromaUrl)
                 .build();

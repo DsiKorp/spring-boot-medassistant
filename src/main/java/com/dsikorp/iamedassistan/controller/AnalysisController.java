@@ -8,6 +8,9 @@ import com.dsikorp.iamedassistan.service.AnalysisService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,23 +26,27 @@ public class AnalysisController {
     private final AnalysisService analysisService;
 
     @PostMapping("/condition")
-    public ResponseEntity<ConditionSummaryDto> analyzeCondition(@Valid @RequestBody ChatRequestDto request){
-        return ResponseEntity.ok(analysisService.summarizeCondition(request.prompt(), request.model()));
+    public ResponseEntity<ConditionSummaryDto> analyzeCondition(@Valid @RequestBody ChatRequestDto request,
+                                                                @AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok(analysisService.summarizeCondition(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/conditions")
-    public ResponseEntity<List<ConditionSummaryDto>> listConditions(@Valid @RequestBody ChatRequestDto request){
-        return ResponseEntity.ok(analysisService.listRelatedConditions(request.prompt(), request.model()));
+    public ResponseEntity<List<ConditionSummaryDto>> listConditions(@Valid @RequestBody ChatRequestDto request,
+                                                                    @AuthenticationPrincipal Jwt jwt){
+        return ResponseEntity.ok(analysisService.listRelatedConditions(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/symptoms")
-    public ResponseEntity<SymptomAnalysisDto> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(analysisService.analyzeSymptoms(request.prompt(), request.model()));
+    public ResponseEntity<SymptomAnalysisDto> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request,
+                                                              @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(analysisService.analyzeSymptoms(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/classify")
-    public ResponseEntity<QueryClassificationDto> classifyQuery(@Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(analysisService.classifyQuery(request.prompt(), request.model()));
+    public ResponseEntity<QueryClassificationDto> classifyQuery(@Valid @RequestBody ChatRequestDto request,
+                                                                @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(analysisService.classifyQuery(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 }
 

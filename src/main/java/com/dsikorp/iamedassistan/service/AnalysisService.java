@@ -9,8 +9,8 @@ import com.dsikorp.iamedassistan.dto.analysis.SymptomAnalysisDto;
 import java.util.List;
 
 public interface AnalysisService {
-    ConditionSummaryDto summarizeCondition(String condition, String model);
-    List<ConditionSummaryDto> listRelatedConditions(String symptoms, String model);
-    SymptomAnalysisDto analyzeSymptoms(String symptoms, String model);
-    QueryClassificationDto classifyQuery(String query, String model);
+    ConditionSummaryDto summarizeCondition(String condition, String model, Long useId);
+    List<ConditionSummaryDto> listRelatedConditions(String symptoms, String model, Long useId);
+    SymptomAnalysisDto analyzeSymptoms(String symptoms, String model, Long useId);
+    QueryClassificationDto classifyQuery(String query, String model, Long useId);
 }

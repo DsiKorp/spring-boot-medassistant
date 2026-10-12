@@ -50,24 +50,28 @@ public class ChatController {
     }
 
     @PostMapping("/explain")
-    public ResponseEntity<String> explainCondition(@Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(assistantService.explainCondition(request.prompt(), request.model()));
+    public ResponseEntity<String> explainCondition(@Valid @RequestBody ChatRequestDto request,
+                                                   @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(assistantService.explainCondition(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/symptoms")
-    public ResponseEntity<String> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request) {
-        return ResponseEntity.ok(assistantService.analyzeSymptoms(request.prompt(), request.model()));
+    public ResponseEntity<String> analyzeSymptoms(@Valid @RequestBody ChatRequestDto request,
+                                                  @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(assistantService.analyzeSymptoms(request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/diagnose")
-    public ResponseEntity<String> diagnoseWithReasoning(@Valid @RequestBody ChatRequestDto request) {
+    public ResponseEntity<String> diagnoseWithReasoning(@Valid @RequestBody ChatRequestDto request,
+                                                        @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(assistantService.diagnoseWithReasoning(
-                        request.prompt(), request.model()));
+                        request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 
     @PostMapping("/consult")
-    public ResponseEntity<String> consult(@Valid @RequestBody ChatRequestDto request) {
+    public ResponseEntity<String> consult(@Valid @RequestBody ChatRequestDto request,
+                                          @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(assistantService.consult(
-                        request.prompt(), request.model()));
+                        request.prompt(), request.model(), jwt.getClaim("userId")));
     }
 }
