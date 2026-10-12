@@ -162,8 +162,8 @@ public class AssistantConfig {
                 .build();
     }
 
-    @Bean("openiaClient")
-    ChatClient openiaClient(OpenAiChatModel chatModel,
+    @Bean("openaiClient")
+    ChatClient openaiClient(OpenAiChatModel chatModel,
                             @Qualifier("openiaVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)

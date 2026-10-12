@@ -1,0 +1,38 @@
+package com.dsikorp.iamedassistan.controller;
+
+import com.dsikorp.iamedassistan.agent.AppointmentChainService;
+import com.dsikorp.iamedassistan.dto.ChatRequestDto;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.ollama.api.OllamaApi;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/agent")
+public class AgentController {
+
+    private final AppointmentChainService appointmentChainService;
+    //private final RoutingWorkflowService routingWorkflowService;
+    //private final OrchestratorService orchestratorService;
+    //private final OpenAgentService openAgentService;
+
+    @PostMapping("/chain/appointment")
+    public ResponseEntity<String> bookAppointmentChain(
+            @Valid @RequestBody ChatRequestDto request,
+            @AuthenticationPrincipal Jwt jwt
+    ){
+
+        Long userId = jwt.getClaim("userId");
+
+        return ResponseEntity
+                .ok(appointmentChainService
+                        .bookAppointmentChain(request.prompt(), request.model(), userId));
+    }
+}

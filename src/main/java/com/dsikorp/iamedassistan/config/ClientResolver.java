@@ -21,7 +21,7 @@ public class ClientResolver {
     public ClientResolver(
             @Qualifier("geminiClient") ChatClient geminiClient,
             @Qualifier("ollamaClient") ChatClient ollamaClient,
-            @Qualifier("openiaClient") ChatClient openaiClient,
+            @Qualifier("openaiClient") ChatClient openaiClient,
             @Qualifier("anthropicClient") ChatClient anthropicClient,
             @Qualifier("groqClient") ChatClient groqClient,
             @Qualifier("minimaxClient") ChatClient minimaxClient,
