@@ -164,7 +164,7 @@ public class AssistantConfig {
 
     @Bean("openaiClient")
     ChatClient openaiClient(OpenAiChatModel chatModel,
-                            @Qualifier("openiaVectorStore") VectorStore vectorStore) throws IOException {
+                            @Qualifier("openaiVectorStore") VectorStore vectorStore) throws IOException {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(systemPrompt)
@@ -350,12 +350,12 @@ public class AssistantConfig {
                 .build();
     }
 
-    @Bean("openiaVectorStore")
-    VectorStore openiaVectorStore(
+    @Bean("openaiVectorStore")
+    VectorStore openaiVectorStore(
             @Qualifier("openAiEmbeddingModel") EmbeddingModel embedding,
             ChromaApi chromaApi) {
         return ChromaVectorStore.builder(chromaApi, embedding)
-                .collectionName("medassistant_openia")
+                .collectionName("medassistant_openai")
                 .initializeSchema(true)
                 .build();
     }

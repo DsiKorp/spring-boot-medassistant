@@ -20,7 +20,7 @@ public class DocumentIngestionService {
 
     private final VectorStore googleVectorStore;
     private final VectorStore ollamaVectorStore;
-    private final VectorStore openiaVectorStore;
+    private final VectorStore openaiVectorStore;
     private final VectorStore anthropicVectorStore;
     private final VectorStore groqVectorStore;
     private final VectorStore minimaxVectorStore;
@@ -37,14 +37,14 @@ public class DocumentIngestionService {
     public DocumentIngestionService(
             @Qualifier("googleVectorStore") VectorStore googleVectorStore,
             @Qualifier("ollamaVectorStore") VectorStore ollamaVectorStore,
-            @Qualifier("openiaVectorStore") VectorStore openiaVectorStore,
+            @Qualifier("openaiVectorStore") VectorStore openaiVectorStore,
             @Qualifier("anthropicVectorStore") VectorStore anthropicVectorStore,
             @Qualifier("groqVectorStore") VectorStore groqVectorStore,
             @Qualifier("minimaxVectorStore") VectorStore minimaxVectorStore
     ) {
         this.googleVectorStore = googleVectorStore;
         this.ollamaVectorStore = ollamaVectorStore;
-        this.openiaVectorStore = openiaVectorStore;
+        this.openaiVectorStore = openaiVectorStore;
         this.anthropicVectorStore = anthropicVectorStore;
         this.groqVectorStore = groqVectorStore;
         this.minimaxVectorStore = minimaxVectorStore;
@@ -73,8 +73,8 @@ public class DocumentIngestionService {
         log.info("Ingiriendo en collection Ollama...");
         ollamaVectorStore.add(chunks);
 
-        log.info("Ingiriendo en collection OpenIa...");
-        openiaVectorStore.add(chunks);
+        log.info("Ingiriendo en collection OpenAI...");
+        openaiVectorStore.add(chunks);
 
         log.info("Ingiriendo en collection Anthropic...");
         anthropicVectorStore.add(chunks);
