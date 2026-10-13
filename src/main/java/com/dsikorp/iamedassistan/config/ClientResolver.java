@@ -20,6 +20,8 @@ public class ClientResolver {
 
     private final ChatModel geminiModel;
     private final ChatModel ollamaModel;
+    private final ChatModel openaiModel;
+    private final ChatModel anthropicModel;
 
     private final Environment environment;
 
@@ -32,6 +34,8 @@ public class ClientResolver {
             @Qualifier("minimaxClient") ChatClient minimaxClient,
             @Qualifier("googleGenAiChatModel") ChatModel geminiModel,
             @Qualifier("ollamaChatModel") ChatModel ollamaModel,
+            @Qualifier("openAiChatModel") ChatModel openaiModel,
+            @Qualifier("anthropicChatModel") ChatModel anthropicModel,
             Environment environment) {
         this.geminiClient = geminiClient;
         this.ollamaClient = ollamaClient;
@@ -41,6 +45,8 @@ public class ClientResolver {
         this.minimaxClient = minimaxClient;
         this.geminiModel = geminiModel;
         this.ollamaModel = ollamaModel;
+        this.openaiModel = openaiModel;
+        this.anthropicModel = anthropicModel;
         this.environment = environment;
     }
 
@@ -104,8 +110,24 @@ public class ClientResolver {
         return value;
     }
 
-    public ChatModel resolveModel(String model){
-        return "ollama".equalsIgnoreCase(model) ? ollamaModel : geminiModel;
+    public ChatModel resolveModel(String model) {
+
+        log.info("resolveClient Proveedor modelo: {}", model);
+        log.info("resolveClient modelo específico: {}", modelEnvSearch(model));
+
+        if (model == null) {
+            return geminiModel;
+        }
+        if ("ollama".equalsIgnoreCase(model)) {
+            return ollamaModel;
+        }
+        if ("openai".equalsIgnoreCase(model)) {
+            return openaiModel;
+        }
+        if ("anthropic".equalsIgnoreCase(model)) {
+            return anthropicModel;
+        }
+        return geminiModel;
     }
 
 }
