@@ -2,6 +2,7 @@ package com.dsikorp.iamedassistan.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,10 @@ public class ClientResolver {
     private final ChatClient anthropicClient;
     private final ChatClient groqClient;
     private final ChatClient minimaxClient;
+
+    private final ChatModel geminiModel;
+    private final ChatModel ollamaModel;
+
     private final Environment environment;
 
     public ClientResolver(
@@ -25,6 +30,8 @@ public class ClientResolver {
             @Qualifier("anthropicClient") ChatClient anthropicClient,
             @Qualifier("groqClient") ChatClient groqClient,
             @Qualifier("minimaxClient") ChatClient minimaxClient,
+            @Qualifier("googleGenAiChatModel") ChatModel geminiModel,
+            @Qualifier("ollamaChatModel") ChatModel ollamaModel,
             Environment environment) {
         this.geminiClient = geminiClient;
         this.ollamaClient = ollamaClient;
@@ -32,6 +39,8 @@ public class ClientResolver {
         this.anthropicClient = anthropicClient;
         this.groqClient = groqClient;
         this.minimaxClient = minimaxClient;
+        this.geminiModel = geminiModel;
+        this.ollamaModel = ollamaModel;
         this.environment = environment;
     }
 
@@ -94,4 +103,9 @@ public class ClientResolver {
         }
         return value;
     }
+
+    public ChatModel resolveModel(String model){
+        return "ollama".equalsIgnoreCase(model) ? ollamaModel : geminiModel;
+    }
+
 }

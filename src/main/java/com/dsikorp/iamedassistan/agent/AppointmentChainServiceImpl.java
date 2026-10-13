@@ -109,8 +109,8 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
 
         String prompt = extractionTemplate.render(Map.of("pedido", userRequest));
 
-//        AppointmentRequest extracted = ChatClient.create(clientResolver.resolveModel(model))
-        AppointmentRequest extracted = clientResolver.resolve(model)
+        AppointmentRequest extracted = ChatClient.create(clientResolver.resolveModel(model))
+//        AppointmentRequest extracted = clientResolver.resolve(model)
                 .prompt()
                 .system("Sos un extractor de datos. Extraés exactamente lo que dice el texto, " +
                         "sin interpretar ni cambiar nada.")
@@ -138,6 +138,11 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
     private String select(String userRequest, List<AppointmentInfo> available,
                           String model, Long userId){
 
+        log.info("Chain paso 3 select — userRequest: {}", userRequest);
+        log.info("Chain paso 3 select — available: {}", available);
+        log.info("Chain paso 3 select — model: {}", model);
+        log.info("Chain paso 3 select — userId: {}", userId);
+
         if(available.isEmpty()){
             return "No se encontraron turnos disponibles para esa especialidad y fecha. Podés probar con otra fecha.";
         }
@@ -158,8 +163,8 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
 
         log.info("Chain paso 3 - turnos enviados al modelo: {}", available);
 
-        //return ChatClient.create(clientResolver.resolveModel(model))
-        return clientResolver.resolve(model)
+        return ChatClient.create(clientResolver.resolveModel(model))
+        //return clientResolver.resolve(model)
                 .prompt()
                 .system("Sos un asistente de gestión de turnos médicos. " +
                         "Seleccioná el mejor turno y completá todos los campos.")

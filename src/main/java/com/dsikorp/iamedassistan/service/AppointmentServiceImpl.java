@@ -106,6 +106,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             Map<Long, String> doctorNames,
             String specialty
     ){
+        log.info("toAppointmentInfoList appointments: {}", appointments);
+        log.info("toAppointmentInfoList doctorNames: {}", doctorNames);
+        log.info("toAppointmentInfoList specialty: {}", specialty);
+
         return appointments.stream()
                 .map(a -> new AppointmentInfo(  // AppointmentInfo DTO
                         doctorNames.get(a.getDoctorId()),
