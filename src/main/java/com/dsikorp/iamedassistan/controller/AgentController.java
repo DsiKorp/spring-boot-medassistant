@@ -1,6 +1,7 @@
 package com.dsikorp.iamedassistan.controller;
 
 import com.dsikorp.iamedassistan.agent.AppointmentChainService;
+import com.dsikorp.iamedassistan.agent.RoutingWorkflowService;
 import com.dsikorp.iamedassistan.dto.ChatRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AgentController {
 
     private final AppointmentChainService appointmentChainService;
-    //private final RoutingWorkflowService routingWorkflowService;
+    private final RoutingWorkflowService routingWorkflowService;
     //private final OrchestratorService orchestratorService;
     //private final OpenAgentService openAgentService;
 
@@ -34,5 +35,14 @@ public class AgentController {
         return ResponseEntity
                 .ok(appointmentChainService
                         .bookAppointmentChain(request.prompt(), request.model(), userId));
+    }
+
+    @PostMapping("/routing")
+    public ResponseEntity<String> routeQuery(
+            @Valid @RequestBody ChatRequestDto request,
+            @AuthenticationPrincipal Jwt jwt) {
+        Long userId = jwt.getClaim("userId");
+        return ResponseEntity.ok(
+                routingWorkflowService.routeQuery(request.prompt(), request.model(), userId));
     }
 }
