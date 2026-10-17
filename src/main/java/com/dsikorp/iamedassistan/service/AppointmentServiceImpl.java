@@ -26,6 +26,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final DoctorRepository doctorRepository;
     private final AppointmentRepository appointmentRepository;
 
+    //@Transactional(readOnly = true)
     @Override
     public List<AppointmentInfo> findAvailableAppointments(String specialty, LocalDate date){
         log.info("Buscando turnos disponibles: specialty={}, date={}", specialty, date);

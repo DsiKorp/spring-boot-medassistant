@@ -128,7 +128,7 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
                 extracted.specialty(), LocalDate.parse(extracted.date())
         );
 
-        log.info("Chain paso 2 — turnos encontrados: {}", available.size());
+        log.info("Chain paso 2 — turnos encontrados AppointmentInfo: {}", available.size());
         log.info("Chain paso 2 — extracted.specialty(): {}", extracted.specialty());
         log.info("Chain paso 2 — LocalDate.parse(extracted.date(): {}", LocalDate.parse(extracted.date()));
         return available;

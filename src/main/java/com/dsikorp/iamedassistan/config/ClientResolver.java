@@ -3,6 +3,7 @@ package com.dsikorp.iamedassistan.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,13 @@ public class ClientResolver {
     private final ChatModel openaiModel;
     private final ChatModel anthropicModel;
 
+    private final VectorStore googleVectorStore;
+    private final VectorStore ollamaVectorStore;
+    private final VectorStore openaiVectorStore;
+    private final VectorStore anthropicVectorStore;
+    private final VectorStore groqVectorStore;
+    private final VectorStore minimaxVectorStore;
+
     private final Environment environment;
 
     public ClientResolver(
@@ -36,6 +44,12 @@ public class ClientResolver {
             @Qualifier("ollamaChatModel") ChatModel ollamaModel,
             @Qualifier("openAiChatModel") ChatModel openaiModel,
             @Qualifier("anthropicChatModel") ChatModel anthropicModel,
+            @Qualifier("googleVectorStore") VectorStore googleVectorStore,
+            @Qualifier("ollamaVectorStore") VectorStore ollamaVectorStore,
+            @Qualifier("openaiVectorStore") VectorStore openaiVectorStore,
+            @Qualifier("anthropicVectorStore") VectorStore anthropicVectorStore,
+            @Qualifier("groqVectorStore") VectorStore groqVectorStore,
+            @Qualifier("minimaxVectorStore") VectorStore minimaxVectorStore,
             Environment environment) {
         this.geminiClient = geminiClient;
         this.ollamaClient = ollamaClient;
@@ -47,6 +61,12 @@ public class ClientResolver {
         this.ollamaModel = ollamaModel;
         this.openaiModel = openaiModel;
         this.anthropicModel = anthropicModel;
+        this.googleVectorStore = googleVectorStore;
+        this.ollamaVectorStore = ollamaVectorStore;
+        this.openaiVectorStore = openaiVectorStore;
+        this.anthropicVectorStore = anthropicVectorStore;
+        this.groqVectorStore = groqVectorStore;
+        this.minimaxVectorStore = minimaxVectorStore;
         this.environment = environment;
     }
 
@@ -128,6 +148,20 @@ public class ClientResolver {
             return anthropicModel;
         }
         return geminiModel;
+    }
+
+    public VectorStore resolveVectorStore(String model) {
+        if (model == null) {
+            return googleVectorStore;
+        }
+        return switch (model.toLowerCase()) {
+            case "ollama"    -> ollamaVectorStore;
+            case "openai"    -> openaiVectorStore;
+            case "anthropic" -> anthropicVectorStore;
+            case "groq"      -> groqVectorStore;
+            case "minimax"   -> minimaxVectorStore;
+            default          -> googleVectorStore;
+        };
     }
 
 }
