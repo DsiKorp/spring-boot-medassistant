@@ -52,57 +52,58 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
         return select(userRequest, available, model, userId);
     }
 
-//    @Override
-//    public String confirmBooking(Long userId) {
-//        AppointmentSelection selection = pendingBookingStore.remove(userId);
-//
-//        if(selection==null){
-//            return "No tenés ningún turno pendiente de confirmación.";
-//        }
-//
-//        if(!isStillAvailable(selection)){
-//            log.info("Turno ya no disponible para userId={}: {} {} {}",
-//                    userId, selection.specialty(), selection.date(), selection.time());
-//            return "El turno que seleccionaste ya no está disponible. Podés buscar otro.";
-//        }
-//
-//        return book(selection,userId);
-//    }
+    @Override
+    public String confirmBooking(Long userId) {
+        AppointmentSelection selection = pendingBookingStore.remove(userId);
 
-//    private String book(AppointmentSelection selection, Long userId){
-//
-//        String result = appointmentService.bookAppointment(
-//                selection.specialty(),
-//                LocalDate.parse(selection.date()),
-//                LocalTime.parse(selection.time()),
-//                userId
-//        );
-//
-//        log.info("Resultado de la reserva: {}", result);
-//        return result;
-//    }
-//
-//    private boolean isStillAvailable(AppointmentSelection selection){
-//        List<AppointmentInfo> available = appointmentService.findAvailableAppointments(
-//                selection.specialty(), LocalDate.parse(selection.date()));
-//
-//        return available.stream().anyMatch( a -> a.time().equals(selection.time()));
-//    }
+        if(selection==null){
+            return "No tenés ningún turno pendiente de confirmación.";
+        }
+
+        if(!isStillAvailable(selection)){
+            log.info("Turno ya no disponible para userId={}: {} {} {}",
+                    userId, selection.specialty(), selection.date(), selection.time());
+            return "El turno que seleccionaste ya no está disponible. Podés buscar otro.";
+        }
+
+        return book(selection,userId);
+    }
+
+    private String book(AppointmentSelection selection, Long userId){
+
+        // Almacena el la db
+        String result = appointmentService.bookAppointment(
+                selection.specialty(),
+                LocalDate.parse(selection.date()),
+                LocalTime.parse(selection.time()),
+                userId
+        );
+
+        log.info("Resultado de la reserva: {}", result);
+        return result;
+    }
+
+    private boolean isStillAvailable(AppointmentSelection selection){
+        List<AppointmentInfo> available = appointmentService.findAvailableAppointments(
+                selection.specialty(), LocalDate.parse(selection.date()));
+
+        return available.stream().anyMatch( a -> a.time().equals(selection.time()));
+    }
 
 
-//    @Override
-//    public String cancelBooking(Long userId) {
-//
-//        AppointmentSelection selection = pendingBookingStore.remove(userId);
-//
-//        if(selection==null){
-//            return "No tenés ningún turno pendiente de cancelación.";
-//        }
-//        log.info("Turno cancelado por userId={}: {} {} {}",
-//                userId, selection.specialty(), selection.date(), selection.time());
-//
-//        return "Turno descartado. Podés buscar otro cuando quieras.";
-//    }
+    @Override
+    public String cancelBooking(Long userId) {
+
+        AppointmentSelection selection = pendingBookingStore.remove(userId);
+
+        if(selection==null){
+            return "No tenés ningún turno pendiente de cancelación.";
+        }
+        log.info("Turno cancelado por userId={}: {} {} {}",
+                userId, selection.specialty(), selection.date(), selection.time());
+
+        return "Turno descartado. Podés buscar otro cuando quieras.";
+    }
 
 
     private AppointmentRequest interpret(String userRequest, String model){
@@ -172,6 +173,7 @@ public class AppointmentChainServiceImpl implements AppointmentChainService{
                 .call()
                 .entity(AppointmentSelection.class);
     }
+
 
 
 }
