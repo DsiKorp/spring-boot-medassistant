@@ -83,7 +83,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepository.save(appointment);
         log.info("bookAppointment Saved appointment = {}", appointment);
 
-        return "Turno reservado exitosamente.";
+        return "Turno reservado exitosamente. " + appointment.getDate() + " " + appointment.getStartTime();
     }
 
     @Transactional(readOnly = true)

@@ -164,9 +164,9 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <systemPropertyVariables>
-                        <spring.config.import>optional:file:.env[.properties]</spring.config.import>
-                    </systemPropertyVariables>
+<!--                    <systemPropertyVariables>-->
+<!--                        <spring.config.import>optional:file:.env[.properties]</spring.config.import>-->
+<!--                    </systemPropertyVariables>-->
                 </configuration>
             </plugin>
             <plugin>

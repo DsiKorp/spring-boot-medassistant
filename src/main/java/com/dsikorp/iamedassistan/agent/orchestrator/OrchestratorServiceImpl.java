@@ -95,6 +95,7 @@ public class OrchestratorServiceImpl implements OrchestratorService{
                 log.error("Orquestador (progreso) — error: {}", e.getMessage());
                 sink.error(e);
             }
+            // deja libre el http para que se ejecute lo anterior
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }
