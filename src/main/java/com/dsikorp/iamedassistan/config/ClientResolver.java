@@ -74,27 +74,17 @@ public class ClientResolver {
         log.info("resolveClient Proveedor modelo: {}", model);
         log.info("resolveClient modelo específico: {}", modelEnvSearch(model));
 
-        if ("ollama".equalsIgnoreCase(model)) {
-            return ollamaClient;
-        }
-
-        if ("openai".equalsIgnoreCase(model)) {
-            return openaiClient;
-        }
-
-        if ("anthropic".equalsIgnoreCase(model)) {
-            return anthropicClient;
-        }
-
-        if ("groq".equalsIgnoreCase(model)) {
-            return groqClient;
-        }
-
-        if ("minimax".equalsIgnoreCase(model)) {
-            return minimaxClient;
-        }
-
-        return geminiClient;
+        return switch (normalize(model)){
+            case "gemini" -> geminiClient;
+            case "ollama" -> ollamaClient;
+            case "openai" -> openaiClient;
+            case "anthropic" -> anthropicClient;
+            case "groq" -> groqClient;
+            case "minimax" -> minimaxClient;
+            default -> throw new IllegalArgumentException(
+                    "resolve: Modelo no soportado: '%s'. Valores válidos: gemini, ollama, openai, anhtorpic, groq, minimax".formatted(model)
+            );
+        };
     }
 
     /**
@@ -135,19 +125,14 @@ public class ClientResolver {
         log.info("resolveClient Proveedor modelo: {}", model);
         log.info("resolveClient modelo específico: {}", modelEnvSearch(model));
 
-        if (model == null) {
-            return geminiModel;
-        }
-        if ("ollama".equalsIgnoreCase(model)) {
-            return ollamaModel;
-        }
-        if ("openai".equalsIgnoreCase(model)) {
-            return openaiModel;
-        }
-        if ("anthropic".equalsIgnoreCase(model)) {
-            return anthropicModel;
-        }
-        return geminiModel;
+        return switch (normalize(model)) {
+            case "gemini" -> geminiModel;
+            case "ollama" -> ollamaModel;
+            case "openai" -> openaiModel;
+            case "anthropic" -> anthropicModel;
+            default -> throw new IllegalArgumentException(
+                    "resolveModel: Modelo no soportado: '%s'. Valores válidos: gemini, ollama, openai, anthropic".formatted(model));
+        };
     }
 
     public VectorStore resolveVectorStore(String model) {
@@ -155,13 +140,20 @@ public class ClientResolver {
             return googleVectorStore;
         }
         return switch (model.toLowerCase()) {
+            case "gemini"    -> googleVectorStore;
             case "ollama"    -> ollamaVectorStore;
             case "openai"    -> openaiVectorStore;
             case "anthropic" -> anthropicVectorStore;
             case "groq"      -> groqVectorStore;
             case "minimax"   -> minimaxVectorStore;
-            default          -> googleVectorStore;
+            default -> throw new IllegalArgumentException(
+                    "resolveVectorStore: Modelo no soportado: '%s'. Valores válidos: gemini, ollama".formatted(model));
         };
     }
+
+    private String normalize(String model){
+        return model == null ? "gemini" : model.strip().toLowerCase();
+    }
+
 
 }

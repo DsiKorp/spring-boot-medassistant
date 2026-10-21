@@ -1,0 +1,5 @@
+docker volume ls | grep chroma
+spring-boot-medassistant_chroma-data
+docker compose stop chroma
+docker compose rm -f chroma
+docker volume rm spring-boot-medassistant_chroma-data
