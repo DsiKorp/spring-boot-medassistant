@@ -147,7 +147,7 @@ public class ClientResolver {
             case "groq"      -> groqVectorStore;
             case "minimax"   -> minimaxVectorStore;
             default -> throw new IllegalArgumentException(
-                    "resolveVectorStore: Modelo no soportado: '%s'. Valores válidos: gemini, ollama".formatted(model));
+                    "resolveVectorStore: Modelo no soportado: '%s'. Valores válidos: gemini, ollama, openai, anthropic, groq, minimax".formatted(model));
         };
     }
 
