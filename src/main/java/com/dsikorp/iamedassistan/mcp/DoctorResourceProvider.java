@@ -20,7 +20,7 @@ public class DoctorResourceProvider {
     private final DoctorService doctorService;
 
     @McpResource(
-            uri = "doctor://{specialty}",
+            uri = "doctor://{specialty}",  // template
             name = "Doctores por especialidad",
             description = "Lista de doctores disponibles para una especialidad médica"
     )
