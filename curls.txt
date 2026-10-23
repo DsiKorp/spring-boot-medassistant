@@ -17,3 +17,36 @@ curl -X POST http://localhost:11434/api/generate -d '{
 ./mvnw clean compile -DskipTests -U
 
 st = string template
+
+
+
+
+
+
+curl --location --request POST \
+  'https://api.labdigbdbdevcd.com/savings/customer/bank-references/base64?page=0&size=15000' \
+  -H 'Content-Type: application/json' \
+  -H 'x-rquid: be56a236-e3ba-4686-88f5-7d7260696792' \
+  -H 'identification-number: ODA4MDI3ODND' \
+  -H 'access-token: token' \
+  -H 'x-auth-token: v3' \
+  -H 'user-agent: Amazon CloudFront' \
+  -H 'host: api.labdigbdbdevcd.com' \
+  -H 'x-origin-cloudfront: labdigbdbdevcd.com' \
+  -H 'x-custom-header-cd: MK80zmnEkuHWI5nj2RYPiJgxeg18SqM' \
+  -d '{
+    "requestId": "7a3b9c1e-4d2f-4a8b-9e6f-1c5d8b2f0a47",
+    "spName": "C",
+    "clientIdentityNumber": "80802783",
+    "accountNumber": "0006587901",
+    "accountType": "SDA",
+    "city": "Bogotá",
+    "productDetails": [
+      {
+        "accountSubType": "061",
+        "postedDate": "2024-11-29"
+      }
+    ],
+    "officeId": "0006",
+    "fullName": "Sebastián Perez"
+  }'

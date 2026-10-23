@@ -29,6 +29,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/mcp/**").hasAnyRole("PATIENT", "ADMIN")
+                        //.requestMatchers("/mcp/**").permitAll()
                         .requestMatchers("/api/v1/**").hasAnyRole("PATIENT", "ADMIN")
                         //.requestMatchers("/api/v1/**").hasRole("PATIENT")
                         .anyRequest().authenticated()

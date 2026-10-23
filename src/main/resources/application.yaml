@@ -42,6 +42,28 @@ spring:
         url: http://localhost:8000
         #collection-name: medassistant # @Bean("ollamaVectorStore") y @Bean("ollamaVectorStore")
         #initialize-schema: true
+    # https://gist.github.com/gchaldu/c5976ba0084b25aea339a74b0dade125
+    mcp:
+      client:
+        stdio:
+          connections:
+            filesystem:
+              command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-filesystem
+              args:
+                - "/Users/JDELG33/Documents/Code/Java/SpringAi/spring-boot-medassistant/src/main/resources/prompts"
+              env:
+                PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+            github:
+              command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-github
+              args:
+                - ""
+              env:
+                GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_TOKEN}
+                PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+      server:
+        name: medassistant-mcp
+        version: 1.0.0
+        protocol: STATELESS
 #logging:
 #  level:
 #    org.springframework.ai: DEBUG
