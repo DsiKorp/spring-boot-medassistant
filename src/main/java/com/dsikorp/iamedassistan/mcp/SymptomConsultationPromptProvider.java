@@ -36,10 +36,12 @@ public class SymptomConsultationPromptProvider {
                 una consulta médica presencial.
                 """.formatted(symptom);
 
-        return new McpSchema.GetPromptResult(
-                "Consulta sobre síntomas",
-                List.of(new McpSchema.PromptMessage(McpSchema.Role.USER, new McpSchema.TextContent(message)))
-        );
+        return McpSchema.GetPromptResult.builder(
+                        List.of(new McpSchema.PromptMessage(
+                                McpSchema.Role.USER,
+                                McpSchema.TextContent.builder(message).build())))
+                .description("Consulta sobre síntomas")
+                .build();
 
     }
 }

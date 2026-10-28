@@ -1,6 +1,6 @@
 package com.dsikorp.iamedassistan.config;
 
-import com.dsikorp.iamedassistan.tool.*;
+import com.dsikorp.iamedassistan.tools.*;
 import com.anthropic.models.messages.Model;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.annotation.PostConstruct;
@@ -26,6 +26,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -39,6 +40,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.OpenAIClientAsync;
 
 @Configuration
+@Profile("!aws")
 @RequiredArgsConstructor
 @Slf4j
 public class AssistantConfig {

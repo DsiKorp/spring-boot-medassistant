@@ -1,0 +1,16 @@
+# docker compose -f docker-compose.aws-test.yml up -d
+services:
+  pgvector:
+    image: pgvector/pgvector:pg17
+    container_name: medassistant-pgvector-aws
+    environment:
+      POSTGRES_DB: medassistant_prod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgvector-aws-data:/var/lib/postgresql/data
+
+volumes:
+  pgvector-aws-data:

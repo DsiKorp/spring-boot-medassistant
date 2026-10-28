@@ -2,10 +2,10 @@ package com.dsikorp.iamedassistan.agent.OpenAgent;
 
 import com.dsikorp.iamedassistan.config.ClientResolver;
 
-import com.dsikorp.iamedassistan.tool.AppointmentSearchTool;
-import com.dsikorp.iamedassistan.tool.DoctorInfoTool;
-import com.dsikorp.iamedassistan.tool.DrugInfoTool;
-import com.dsikorp.iamedassistan.tool.PatientInfoTool;
+import com.dsikorp.iamedassistan.tools.AppointmentSearchTool;
+import com.dsikorp.iamedassistan.tools.DoctorInfoTool;
+import com.dsikorp.iamedassistan.tools.DrugInfoTool;
+import com.dsikorp.iamedassistan.tools.PatientInfoTool;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

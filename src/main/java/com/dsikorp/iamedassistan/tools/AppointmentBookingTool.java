@@ -1,4 +1,4 @@
-package com.dsikorp.iamedassistan.tool;
+package com.dsikorp.iamedassistan.tools;
 
 
 import com.dsikorp.iamedassistan.service.AppointmentService;

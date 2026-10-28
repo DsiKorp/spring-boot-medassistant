@@ -27,6 +27,16 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // Con ddl-auto=update (perfil aws) el schema persiste entre arranques: sin esta guarda
+        // el seed se duplica en cada restart y los tools devuelven doctores y turnos repetidos.
+        if (doctorRepository.count() > 0) {
+            log.info("Datos de prueba ya cargados ({} doctores, {} turnos, {} pacientes) — omitiendo seed",
+                    doctorRepository.count(),
+                    appointmentRepository.count(),
+                    patientRepository.count());
+            return;
+        }
+
         loadDoctors();
         loadAppointments();
         loadPatients();

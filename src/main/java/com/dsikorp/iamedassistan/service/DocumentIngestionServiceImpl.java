@@ -1,5 +1,6 @@
 package com.dsikorp.iamedassistan.service;
 
+import com.dsikorp.iamedassistan.dto.IngestionResult;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -9,6 +10,7 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Profile("!aws")
 @Slf4j
 public class DocumentIngestionServiceImpl implements DocumentIngestionService{
 
@@ -83,7 +86,7 @@ public class DocumentIngestionServiceImpl implements DocumentIngestionService{
     }
 
     @Override
-    public String ingestNewDocument(Resource resource){
+    public IngestionResult ingestNewDocument(Resource resource){
         List<Document> documents = readDocument(resource);
 
         TokenTextSplitter splitter = TokenTextSplitter.builder()
@@ -99,8 +102,7 @@ public class DocumentIngestionServiceImpl implements DocumentIngestionService{
         googleVectorStore.add(chunks);
         ollamaVectorStore.add(chunks);
 
-        return "Documento '%s' ingerido: %d fragmentos"
-                .formatted(resource.getFilename(), chunks.size());
+        return new IngestionResult(resource.getFilename(), chunks.size());
     }
 
 

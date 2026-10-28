@@ -6,8 +6,14 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.ai.vectorstore.chroma.autoconfigure.ChromaVectorStoreAutoConfiguration
+      # El starter de pgvector se activa por defecto en todos los perfiles y su bean exige un
+      # EmbeddingModel único: sin este exclude, los perfiles locales fallan con
+      # NoUniqueBeanDefinitionException (google + ollama + openai). El perfil aws lo excluye
+      # también y arma el PgVectorStore a mano en AssistantConfigAws.
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
   profiles:
-    active: ollama, gemini, openai, anthropic, groq, minimax
+    # active: ollama, gemini, openai, anthropic, groq, minimax
+    active: aws
   application:
     name: iamedassistant
   threads:
@@ -42,24 +48,39 @@ spring:
         url: http://localhost:8000
         #collection-name: medassistant # @Bean("ollamaVectorStore") y @Bean("ollamaVectorStore")
         #initialize-schema: true
-    # https://gist.github.com/gchaldu/c5976ba0084b25aea339a74b0dade125
+    # https://gist.github.com/gchaldu/c5976ba0084b25aea339a74b0dade125 MCP Servers
+    # https://gist.github.com/gchaldu/531f2a5684f0a0640794af3a26377207 Engram
     mcp:
       client:
         stdio:
           connections:
             filesystem:
-              command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-filesystem
+              #command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-filesystem
+              command: /home/dsikorp/.nvm/versions/node/v24.22.1/bin/mcp-server-filesystem
               args:
-                - "/Users/JDELG33/Documents/Code/Java/SpringAi/spring-boot-medassistant/src/main/resources/prompts"
+                #- "/Users/JDELG33/Documents/Code/Java/SpringAi/spring-boot-medassistant/src/main/resources/prompts"
+                - "./src/main/resources/prompts"
               env:
-                PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+                #PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+                PATH: /home/dsikorp/.nvm/versions/node/v24.22.1/bin:/usr/bin:/bin
             github:
-              command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-github
+              #command: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin/mcp-server-github
+              command: /home/dsikorp/.nvm/versions/node/v24.22.1/bin/mcp-server-github
               args:
                 - ""
               env:
                 GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_TOKEN}
-                PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+                #PATH: /Users/JDELG33/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin
+                PATH: /home/dsikorp/.nvm/versions/node/v24.22.1/bin:/usr/bin:/bin
+            engram:
+              #command: /opt/homebrew/bin/engram
+              command: /usr/local/bin/engram
+              args:
+                - "mcp"
+              env:
+                HOME: /home/dsikorp
+                #PATH: /opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
+                PATH: /usr/local/bin:/usr/bin:/bin
       server:
         name: medassistant-mcp
         version: 1.0.0
