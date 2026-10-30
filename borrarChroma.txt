@@ -1,3 +1,8 @@
+https://gist.github.com/gchaldu/c86b5fa95dec16c34a9c8ab279901135
+https://gist.github.com/gchaldu/fb5a805487352a7c6ab90fbcc8f7edc6
+
+docker compose -f docker-compose.aws-test.yml up -d
+
 docker volume ls | grep chroma
 spring-boot-medassistant_chroma-data
 docker compose stop chroma

@@ -16,7 +16,7 @@ spring:
       - org.springframework.ai.model.anthropic.autoconfigure.AnthropicChatAutoConfiguration
 
   datasource:
-    url: jdbc:postgresql://${RDS_HOST:localhost}:${RDS_PORT:5432}/${RDS_DB:medassistant_prod}
+    url: jdbc:postgresql://${RDS_HOST:localhost}:${RDS_PORT:5432}/${RDS_DB:medassistant}
     username: ${RDS_USERNAME:postgres}
     password: ${RDS_PASSWORD}
 
