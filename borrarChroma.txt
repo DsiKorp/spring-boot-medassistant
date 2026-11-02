@@ -8,3 +8,77 @@ spring-boot-medassistant_chroma-data
 docker compose stop chroma
 docker compose rm -f chroma
 docker volume rm spring-boot-medassistant_chroma-data
+
+----------------
+docker logs -f medassistant
+docker logs -f ia-medassistant-keycloak
+docker stop medassistant
+docker rm medassistant
+
+-----------------------------------
+
+https://gist.github.com/gchaldu/85ac057979ab8a847dfc58b741de1baf
+AWS:
+
+aws configure
+aws sts get-caller-identity
+
+
+aws ecr get-login-password --region us-east-1 | \
+  docker login \
+    --username AWS \
+    --password-stdin 626159997716.dkr.ecr.us-east-1.amazonaws.com
+
+docker tag medassistant:aws \
+  626159997716.dkr.ecr.us-east-1.amazonaws.com/medassistant:latest
+
+docker push \
+  626159997716.dkr.ecr.us-east-1.amazonaws.com/medassistant:latest
+
+____________________________________________________________
+ssh -i ~/.ssh/medassistant-key.pem ec2-user@184.193.67.141
+
+sudo dnf update -y
+sudo dnf install -y docker
+docker --version
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo systemctl status docker
+sudo usermod -a -G docker ec2-user
+
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+  -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+docker compose version
+
+sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h
+
+aws sts get-caller-identity
+
+Repetir:
+
+aws ecr get-login-password --region us-east-1 | \
+  docker login \
+    --username AWS \
+    --password-stdin 626159997716.dkr.ecr.us-east-1.amazonaws.com
+
+
+docker pull \
+  626159997716.dkr.ecr.us-east-1.amazonaws.com/medassistant:latest
+
+--------------------------------------------------------------
+Prod
+https://gist.github.com/gchaldu/92bba0b978d80de1e05bed162ed9caf4
+
+Mirar Url, luego
+scp -i ~/.ssh/medassistant-key.pem ./medassistant-realm.json ec2-user@184.193.67.141:/home/ec2-user/
+
+Apagar:
+https://gist.github.com/gchaldu/4df3384126605c24b741ad1612dee111
